@@ -14,7 +14,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #FFF5F7; color: #333; padding-bottom: 80px; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #FFF5F7; color: #333; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         .highlight-food { color: #D62828; font-weight: 700; background: #FFEDED; padding: 1px 4px; border-radius: 4px; }
         .highlight-buy { color: #003049; font-weight: 700; background: #E9F5FF; padding: 1px 4px; border-radius: 4px; }
         .highlight-alert { color: #F77F00; font-weight: 700; border-bottom: 2px dashed #F77F00; }
@@ -22,7 +22,7 @@
         .type-attraction { border-left: 6px solid #2A9D8F; }
         .type-restaurant { border-left: 6px solid #E76F51; }
         .type-hotel { border-left: 6px solid #4F46E5; }
-        .day-header { position: sticky; top: 64px; z-index: 40; background: #FFF5F7; border-radius: 8px; margin-top: 1rem; }
+        .day-header { position: sticky; top: 0; z-index: 40; background: #FFF5F7; border-radius: 8px; margin-top: 1rem; }
         .card-shadow { box-shadow: 0 4px 12px rgba(214, 40, 40, 0.08); }
         .booking-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #FFD1DC; }
         .ticket-style { border-top: 8px solid #333; position: relative; overflow: hidden; }
@@ -35,6 +35,238 @@
         .tip-box { background: white; border-radius: 20px; padding: 18px; margin-bottom: 16px; border-top: 5px solid #1e293b; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .tip-title { font-weight: 800; font-size: 1rem; color: #1e293b; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .tip-highlight { color: #be123c; font-weight: 700; }
+
+        /* === 動態 UX 樣式 === */
+        /* 卡片滾動動畫 */
+        .card-animate {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .card-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Tab 切換動畫 */
+        #app-content {
+            transition: opacity 0.25s ease;
+        }
+        #app-content.fade-out {
+            opacity: 0;
+        }
+
+        /* Checklist 互動 */
+        .check-item-interactive {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 0; border-bottom: 1px solid #fce7eb;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .check-item-interactive:active { background: #fef2f2; }
+        .check-item-interactive.checked .check-label { text-decoration: line-through; color: #94a3b8; }
+        .check-box {
+            width: 22px; height: 22px; min-width: 22px; border-radius: 6px;
+            border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s ease; font-size: 12px; color: transparent; margin-top: 1px;
+        }
+        .check-item-interactive.checked .check-box {
+            background: #10b981; border-color: #10b981; color: white;
+        }
+
+        /* 可收合日期 */
+        .day-header { cursor: pointer; user-select: none; transition: all 0.3s ease; }
+        .day-header:active { transform: scale(0.98); }
+        .day-items { max-height: 5000px; overflow: hidden; transition: max-height 0.5s ease, opacity 0.4s ease; opacity: 1; }
+        .day-items.collapsed { max-height: 0 !important; opacity: 0; }
+        .day-chevron { transition: transform 0.3s ease; }
+        .day-chevron.rotated { transform: rotate(-90deg); }
+
+        /* Day 快速導覽 */
+        .day-nav { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .day-nav::-webkit-scrollbar { display: none; }
+        .day-pill {
+            white-space: nowrap; padding: 6px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 700; border: 1.5px solid #fda4af;
+            color: #be123c; background: white; cursor: pointer;
+            transition: all 0.25s ease; flex-shrink: 0;
+        }
+        .day-pill.active { background: #be123c; color: white; border-color: #be123c; }
+
+        /* 回頂部 FAB */
+        .fab-top {
+            position: fixed; bottom: 90px; right: 16px; z-index: 60;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: #be123c; color: white; border: none;
+            box-shadow: 0 4px 14px rgba(190,18,60,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer;
+            opacity: 0; transform: scale(0.6); pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .fab-top.show { opacity: 1; transform: scale(1); pointer-events: auto; }
+
+        /* 倒數計時 */
+        .countdown { font-size: 10px; color: #be123c; font-weight: 700; margin-top: 4px; letter-spacing: 0.5px; }
+
+        /* === 行事曆（單日檢視） === */
+        .cal-strip {
+            display: flex; gap: 6px; padding: 14px 10px 10px;
+            background: linear-gradient(135deg, #be123c 0%, #e11d48 50%, #f43f5e 100%);
+            border-radius: 18px; margin-bottom: 16px;
+            box-shadow: 0 6px 20px rgba(190,18,60,0.2);
+            justify-content: space-between;
+        }
+        .cal-cell {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+            padding: 6px 0; border-radius: 14px; cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .cal-cell .cc-wd { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5); }
+        .cal-cell .cc-dt {
+            width: 34px; height: 34px; border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 800; color: rgba(255,255,255,0.75);
+            transition: all 0.25s ease;
+        }
+        .cal-cell .cc-lb { font-size: 7px; color: rgba(255,255,255,0.4); font-weight: 600; }
+        .cal-cell.active .cc-dt { background: white; color: #be123c; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+        .cal-cell.active .cc-wd, .cal-cell.active .cc-lb { color: rgba(255,255,255,0.9); }
+        .cal-cell.today .cc-dt { border: 2px solid rgba(255,255,255,0.6); }
+
+        /* 單日 Header */
+        .cal-single-hdr {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 14px;
+        }
+        .cal-single-title { font-size: 15px; font-weight: 800; color: #1e293b; }
+        .cal-single-sub { font-size: 10px; color: #94a3b8; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+        /* 單日時間軸 */
+        .single-grid { position: relative; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #fce7f3; }
+        .single-grid-body { position: relative; }
+        .sg-row {
+            display: flex; height: 55px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .sg-row:first-child { border-top: none; }
+        .sg-row:nth-child(even) { background: rgba(253,164,175,0.02); }
+        .sg-time {
+            width: 48px; min-width: 48px; display: flex; align-items: flex-start;
+            justify-content: center; font-size: 10px; font-weight: 700;
+            color: #94a3b8; padding-top: 2px;
+        }
+        .sg-col {
+            flex: 1; position: relative; border-left: 1px solid #f1f5f9;
+        }
+
+        /* 單日事件區塊 */
+        .sg-event {
+            position: absolute; left: 4px; right: 8px;
+            border-radius: 10px; padding: 8px 10px; overflow: hidden;
+            cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+            z-index: 2; border-left: 4px solid;
+            opacity: 0; animation: ev-pop 0.35s ease forwards;
+        }
+        @keyframes ev-pop {
+            0% { opacity: 0; transform: scale(0.92); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .sg-event:active { transform: scale(0.97); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .sg-event.transport { background: #eff6ff; border-left-color: #457B9D; }
+        .sg-event.attraction { background: #ecfdf5; border-left-color: #2A9D8F; }
+        .sg-event.restaurant { background: #fff7ed; border-left-color: #E76F51; }
+        .sg-event.hotel { background: #eef2ff; border-left-color: #4F46E5; }
+        .sg-event .se-time {
+            font-size: 9px; font-weight: 800; color: #64748b;
+        }
+        .sg-event .se-title {
+            font-size: 12px; font-weight: 700; color: #1e293b;
+            line-height: 1.3; margin-top: 1px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .sg-event .se-desc {
+            font-size: 10px; color: #64748b; line-height: 1.4; margin-top: 3px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .sg-event .se-badge {
+            display: inline-block; font-size: 8px; font-weight: 700;
+            padding: 1px 6px; border-radius: 4px; margin-left: 4px;
+        }
+        .sg-event .se-badge.transport { background: #dbeafe; color: #1e40af; }
+        .sg-event .se-badge.attraction { background: #d1fae5; color: #065f46; }
+        .sg-event .se-badge.restaurant { background: #ffedd5; color: #9a3412; }
+        .sg-event .se-badge.hotel { background: #e0e7ff; color: #3730a3; }
+
+        /* 現在時間線 */
+        .sg-now {
+            position: absolute; left: 48px; right: 0; z-index: 4;
+            height: 2px; background: #be123c; pointer-events: none;
+        }
+        .sg-now::before {
+            content: ''; position: absolute; left: -4px; top: -3px;
+            width: 8px; height: 8px; border-radius: 50%; background: #be123c;
+        }
+
+        /* 統計小條 */
+        .cal-tags {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;
+        }
+        .cal-tag {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 10px; font-weight: 700; color: #475569;
+            background: white; padding: 4px 10px; border-radius: 8px;
+            border: 1px solid #f1f5f9;
+        }
+        .cal-tag-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* 彈出詳情 */
+        .ev-popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; animation: popup-fade 0.25s ease forwards;
+        }
+        @keyframes popup-fade { to { opacity: 1; } }
+        .ev-popup {
+            background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 420px;
+            max-height: 60vh; overflow-y: auto; padding: 24px 20px 32px;
+            transform: translateY(100%); animation: popup-slide 0.35s ease forwards;
+        }
+        @keyframes popup-slide { to { transform: translateY(0); } }
+        .ev-popup-handle { width: 36px; height: 4px; background: #e2e8f0; border-radius: 4px; margin: 0 auto 16px; }
+        .ev-popup .ep-type {
+            display: inline-block; font-size: 9px; font-weight: 700;
+            padding: 3px 10px; border-radius: 6px; margin-bottom: 8px;
+        }
+        .ev-popup .ep-type.transport { background: #dbeafe; color: #1e40af; }
+        .ev-popup .ep-type.attraction { background: #d1fae5; color: #065f46; }
+        .ev-popup .ep-type.restaurant { background: #ffedd5; color: #9a3412; }
+        .ev-popup .ep-type.hotel { background: #e0e7ff; color: #3730a3; }
+        .ev-popup .ep-time { font-size: 12px; font-weight: 800; color: #be123c; margin-bottom: 4px; }
+        .ev-popup .ep-title { font-size: 17px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+        .ev-popup .ep-content { font-size: 13px; color: #475569; line-height: 1.8; }
+        .ev-popup .ep-nav {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #be123c; color: white; font-size: 12px; font-weight: 700;
+            padding: 10px 20px; border-radius: 12px; margin-top: 14px;
+            text-decoration: none;
+        }
+
+        /* === 手機安全區域 & 觸控優化 === */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            nav.fixed.bottom-0 { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+            .fab-top { bottom: calc(90px + env(safe-area-inset-bottom)); }
+        }
+        /* 100dvh fallback */
+        @supports (height: 100dvh) {
+            .grid-cal-scroll { max-height: calc(100dvh - 200px - env(safe-area-inset-bottom, 0px)); }
+        }
+        /* 小螢幕優化 (iPhone SE 等 375px 以下) */
+        @media (max-width: 374px) {
+            nav.fixed.bottom-0 span { font-size: 7px; }
+            nav.fixed.bottom-0 i { font-size: 14px; }
+            .cal-cell .cc-dt { width: 28px; height: 28px; font-size: 13px; }
+            header h1 { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -45,11 +277,20 @@
             <span><i class="fa-solid fa-plane-arrival mr-1"></i> JX846 10:45 KMJ</span>
             <span><i class="fa-solid fa-plane-departure mr-1"></i> BR101 19:20 FUK</span>
         </div>
+        <div id="countdown" class="countdown"></div>
     </header>
+
+    <div id="day-nav-bar" class="bg-white/90 backdrop-blur-sm sticky top-[88px] z-40 border-b border-pink-50 hidden">
+        <div class="day-nav" id="day-nav"></div>
+    </div>
 
     <main id="app-content" class="p-4 space-y-4"></main>
 
-    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-pink-100 flex justify-around items-center py-3 pb-safe z-50">
+    <button class="fab-top" id="fab-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fa-solid fa-chevron-up"></i>
+    </button>
+
+    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-pink-100 flex justify-around items-center py-2 z-50" style="padding-bottom:calc(8px + env(safe-area-inset-bottom, 0px))">
         <button id="tab-itinerary" onclick="switchTab('itinerary')" class="flex flex-col items-center text-pink-600">
             <i class="fa-solid fa-map-location-dot text-lg mb-1"></i>
             <span class="text-[9px] font-bold">全行程 🌸</span>
@@ -57,6 +298,10 @@
         <button id="tab-booking" onclick="switchTab('booking')" class="flex flex-col items-center text-slate-400">
             <i class="fa-solid fa-clipboard-check text-lg mb-1"></i>
             <span class="text-[9px] font-bold">預訂資訊 🐻</span>
+        </button>
+        <button id="tab-calendar" onclick="switchTab('calendar')" class="flex flex-col items-center text-slate-400">
+            <i class="fa-solid fa-calendar-days text-lg mb-1"></i>
+            <span class="text-[9px] font-bold">行事曆</span>
         </button>
         <button id="tab-checklist" onclick="switchTab('checklist')" class="flex flex-col items-center text-slate-400">
             <i class="fa-solid fa-tasks text-lg mb-1"></i>
@@ -69,6 +314,48 @@
     </nav>
 
 <script>
+    // === 倒數計時器 ===
+    function updateCountdown() {
+        const tripDate = new Date('2026-04-07T07:30:00+08:00');
+        const now = new Date();
+        const diff = tripDate - now;
+        const el = document.getElementById('countdown');
+        if (diff <= 0) {
+            const endDate = new Date('2026-04-12T20:45:00+08:00');
+            if (now <= endDate) {
+                el.textContent = '🎉 旅途進行中！享受九州吧！';
+            } else {
+                el.textContent = '✈️ 旅程已結束，期待下次冒險！';
+            }
+            return;
+        }
+        const days = Math.floor(diff / 86400000);
+        const hrs = Math.floor((diff % 86400000) / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        el.textContent = `✈️ 出發倒數 ${days} 天 ${hrs} 時 ${mins} 分`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 60000);
+
+    // === 回頂部 FAB ===
+    window.addEventListener('scroll', () => {
+        document.getElementById('fab-top').classList.toggle('show', window.scrollY > 400);
+    });
+
+    // === Intersection Observer for scroll animations ===
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                scrollObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    function observeCards() {
+        document.querySelectorAll('.card-animate').forEach(card => scrollObserver.observe(card));
+    }
+
     function parseHighlights(text) {
         if(!text) return "";
         return text
@@ -163,21 +450,88 @@
         }
     ];
 
+    // === Day 快速導覽列 ===
+    function buildDayNav() {
+        const nav = document.getElementById('day-nav');
+        nav.innerHTML = '';
+        itineraryData.forEach((day, i) => {
+            const pill = document.createElement('button');
+            pill.className = 'day-pill' + (i === 0 ? ' active' : '');
+            pill.textContent = 'D' + (i + 1);
+            pill.onclick = () => {
+                const target = document.getElementById('day-section-' + i);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
+            nav.appendChild(pill);
+        });
+    }
+
+    function updateActivePill() {
+        const pills = document.querySelectorAll('.day-pill');
+        const sections = document.querySelectorAll('[id^="day-section-"]');
+        let activeIdx = 0;
+        sections.forEach((sec, i) => {
+            if (sec.getBoundingClientRect().top <= 160) activeIdx = i;
+        });
+        pills.forEach((p, i) => p.classList.toggle('active', i === activeIdx));
+    }
+    window.addEventListener('scroll', updateActivePill);
+
+    // === 收合狀態 ===
+    const collapsedDays = {};
+
+    function toggleDay(index) {
+        collapsedDays[index] = !collapsedDays[index];
+        const items = document.getElementById('day-items-' + index);
+        const chevron = document.getElementById('day-chevron-' + index);
+        if (collapsedDays[index]) {
+            items.classList.add('collapsed');
+            chevron.classList.add('rotated');
+        } else {
+            items.classList.remove('collapsed');
+            chevron.classList.remove('rotated');
+        }
+    }
+
     function renderItinerary() {
         const container = document.getElementById('app-content');
         container.innerHTML = '';
-        itineraryData.forEach(day => {
+        document.getElementById('day-nav-bar').classList.remove('hidden');
+        buildDayNav();
+
+        // 計算 sticky top：header + day-nav-bar 高度
+        const hdr = document.querySelector('header');
+        const dnb = document.getElementById('day-nav-bar');
+        const stickyTop = (hdr ? hdr.offsetHeight : 72) + (dnb && !dnb.classList.contains('hidden') ? dnb.offsetHeight : 0);
+
+        itineraryData.forEach((day, dayIdx) => {
             const section = document.createElement('section');
-            section.innerHTML = `<div class="day-header p-3 border border-pink-100 mb-4 rounded-xl flex justify-between items-end shadow-sm"><h2 class="text-sm font-bold text-slate-800">${day.day}</h2><span class="text-[9px] text-pink-500 font-bold uppercase"><i class="fa-solid fa-cloud-sun mr-1"></i>${day.weather}</span></div>`;
-            day.items.forEach(item => {
+            section.id = 'day-section-' + dayIdx;
+            section.innerHTML = `<div class="day-header p-3 border border-pink-100 mb-4 rounded-xl flex justify-between items-center shadow-sm" style="top:${stickyTop}px" onclick="toggleDay(${dayIdx})">
+                <h2 class="text-sm font-bold text-slate-800">${day.day}</h2>
+                <div class="flex items-center gap-2">
+                    <span class="text-[9px] text-pink-500 font-bold uppercase"><i class="fa-solid fa-cloud-sun mr-1"></i>${day.weather}</span>
+                    <i id="day-chevron-${dayIdx}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 day-chevron"></i>
+                </div>
+            </div>`;
+
+            const itemsWrap = document.createElement('div');
+            itemsWrap.id = 'day-items-' + dayIdx;
+            itemsWrap.className = 'day-items';
+            if (collapsedDays[dayIdx]) itemsWrap.classList.add('collapsed');
+
+            day.items.forEach((item, itemIdx) => {
                 const card = document.createElement('div');
-                card.className = `bg-white p-4 rounded-2xl card-shadow mb-4 ${item.type === 'transport' ? 'type-transport' : item.type === 'attraction' ? 'type-attraction' : item.type === 'restaurant' ? 'type-restaurant' : 'type-hotel'}`;
+                card.className = `bg-white p-4 rounded-2xl card-shadow mb-4 card-animate ${item.type === 'transport' ? 'type-transport' : item.type === 'attraction' ? 'type-attraction' : item.type === 'restaurant' ? 'type-restaurant' : 'type-hotel'}`;
+                card.style.transitionDelay = (itemIdx * 0.06) + 's';
                 const navUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map || item.title)}`;
                 card.innerHTML = `<div class="flex justify-between items-center mb-1.5"><span class="text-[10px] font-black text-slate-300 uppercase">${item.time}</span>${item.map ? `<a href="${navUrl}" target="_blank" class="text-[9px] bg-pink-50 px-2 py-1 rounded-md text-pink-600 font-bold">導航 📍</a>` : ''}</div><div class="font-bold text-slate-800 text-sm mb-1">${item.title}</div><div class="text-[10px] text-slate-500 leading-relaxed">${parseHighlights(item.content)}</div>`;
-                section.appendChild(card);
+                itemsWrap.appendChild(card);
             });
+            section.appendChild(itemsWrap);
             container.appendChild(section);
         });
+        observeCards();
     }
 
     function renderBooking() {
@@ -222,29 +576,253 @@
             </div>`;
     }
 
+    // === 互動式 Checklist (localStorage 記憶) ===
+    const checklistItems = [
+        { cat: '證件與法規', icon: 'fa-id-card text-pink-500', items: [
+            { id: 'passport', label: '護照正本 + 中文駕照 + 日文譯本', desc: '自駕必備' },
+            { id: 'vjw', label: 'VJW QR Code', desc: '截圖儲存' }
+        ]},
+        { cat: '財務與購物', icon: 'fa-yen-sign text-green-500', items: [
+            { id: 'cash', label: '日圓現鈔', desc: '划船/屋台/神社僅收現' },
+            { id: 'card', label: '信用卡優惠', desc: '機場免稅優惠' }
+        ]},
+        { cat: '衣物裝備', icon: 'fa-shirt text-indigo-500', items: [
+            { id: 'clothes', label: '洋蔥式穿搭', desc: '4 月九州早晚溫差大，室內暖氣強' },
+            { id: 'shoes', label: '耐走鞋', desc: '長距離步行，鞋底需具備防滑功能' },
+            { id: 'scale', label: '行李秤', desc: 'Day 6 長榮 BR101 回程，退房前精準配重' }
+        ]},
+        { cat: '軟體工具', icon: 'fa-mobile-screen text-indigo-500', items: [
+            { id: 'tenki', label: 'Tenki.JP / Google 翻譯', desc: '' },
+            { id: 'voicetra', label: 'Voicetra', desc: '溝通神器' },
+            { id: 'tabishu', label: '旅收', desc: '日本旅行記帳神器' }
+        ]},
+        { cat: '行程關鍵', icon: 'fa-triangle-exclamation text-red-500', items: [
+            { id: 'gas', label: '還車加油收據', desc: 'Day 4 還車前準備' },
+            { id: 'weight', label: '行李配重', desc: 'Day 6 退房前秤重' }
+        ]}
+    ];
+
+    function getChecked() {
+        try { return JSON.parse(localStorage.getItem('kyushu-checklist') || '{}'); } catch(e) { return {}; }
+    }
+    function setChecked(id, val) {
+        const data = getChecked();
+        data[id] = val;
+        localStorage.setItem('kyushu-checklist', JSON.stringify(data));
+    }
+
     function renderChecklist() {
         const container = document.getElementById('app-content');
-        container.innerHTML = `
-            <div class="bg-white p-6 rounded-3xl card-shadow pb-10">
-                <h2 class="text-xl font-bold text-slate-800 mb-2">專業準備清單 🌸</h2>
-                <div class="check-cat"><i class="fa-solid fa-id-card text-pink-500"></i> 證件與法規</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>護照正本 + 中文駕照 + 日文譯本</strong> (自駕必備)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>VJW QR Code</strong> (截圖儲存)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-yen-sign text-green-500"></i> 財務與購物</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>日圓現鈔</strong> (划船/屋台/神社僅收現)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>信用卡優惠</strong> (機場免稅優惠)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-shirt text-indigo-500"></i> 衣物裝備</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>洋蔥式穿搭</strong> (4 月九州早晚溫差大，室內暖氣強)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>耐走鞋</strong> (長距離步行，鞋底需具備防滑功能)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>行李秤</strong> (Day 6 長榮航空 BR101 回程，因行程包含兩次百貨大採購，退房前精準配重)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-mobile-screen text-indigo-500"></i> 軟體工具</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>Tenki.JP</strong> / <strong>Google 翻譯</strong></div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>Voicetra</strong> (溝通神器)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>旅收</strong> (日本旅行記帳神器)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-triangle-exclamation text-red-500"></i> 行程關鍵</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>還車加油收據</strong> (Day 4 還車前準備)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>行李配重</strong> (Day 6 退房前秤重)</div></div>
+        const checked = getChecked();
+        const totalItems = checklistItems.reduce((s, c) => s + c.items.length, 0);
+        const doneCount = checklistItems.reduce((s, c) => s + c.items.filter(it => checked[it.id]).length, 0);
+        const pct = Math.round(doneCount / totalItems * 100);
+
+        let html = `<div class="bg-white p-6 rounded-3xl card-shadow pb-10">
+            <h2 class="text-xl font-bold text-slate-800 mb-1">專業準備清單 🌸</h2>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="flex-1 h-2 bg-pink-100 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-full transition-all duration-500" style="width:${pct}%"></div></div>
+                <span class="text-[11px] font-bold text-pink-600">${doneCount}/${totalItems}</span>
             </div>`;
+
+        checklistItems.forEach(cat => {
+            html += `<div class="check-cat"><i class="fa-solid ${cat.icon}"></i> ${cat.cat}</div>`;
+            cat.items.forEach(item => {
+                const isChecked = checked[item.id];
+                html += `<div class="check-item-interactive ${isChecked ? 'checked' : ''}" onclick="toggleCheck('${item.id}', this)">
+                    <div class="check-box">${isChecked ? '<i class="fa-solid fa-check"></i>' : ''}</div>
+                    <div class="text-xs check-label"><strong>${item.label}</strong>${item.desc ? ' (' + item.desc + ')' : ''}</div>
+                </div>`;
+            });
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function toggleCheck(id, el) {
+        const checked = getChecked();
+        const newVal = !checked[id];
+        setChecked(id, newVal);
+        renderChecklist();
+    }
+
+    // === 行事曆（單日檢視） ===
+    const calDayMeta = [
+        { date: 7, weekday: '二', label: '熊本' },
+        { date: 8, weekday: '三', label: '阿蘇' },
+        { date: 9, weekday: '四', label: '高千穗' },
+        { date: 10, weekday: '五', label: '博多' },
+        { date: 11, weekday: '六', label: '天神' },
+        { date: 12, weekday: '日', label: '機場' }
+    ];
+    const CAL_ROW_H = 55;
+    const typeLabels = { transport: '交通', attraction: '景點', restaurant: '餐廳', hotel: '住宿' };
+    const typeColors = { transport: '#457B9D', attraction: '#2A9D8F', restaurant: '#E76F51', hotel: '#4F46E5' };
+    let calSelectedDay = 0;
+
+    function detectTodayIndex() {
+        const now = new Date();
+        if (now.getFullYear() === 2026 && now.getMonth() === 3 && now.getDate() >= 7 && now.getDate() <= 12)
+            return now.getDate() - 7;
+        return -1;
+    }
+
+    // 初始化選中日
+    (function() {
+        const ti = detectTodayIndex();
+        if (ti >= 0) calSelectedDay = ti;
+    })();
+
+    function parseTime(t) {
+        const [h, m] = t.split(':').map(Number);
+        return h + m / 60;
+    }
+
+    function estimateDurations(items) {
+        return items.map((item, i) => {
+            const start = parseTime(item.time);
+            let duration;
+            if (i < items.length - 1) {
+                const nextStart = parseTime(items[i + 1].time);
+                duration = Math.max(0.75, Math.min(nextStart - start, 3));
+            } else {
+                duration = item.type === 'hotel' ? 1.25 : 1.5;
+            }
+            return { ...item, startH: start, duration };
+        });
+    }
+
+    function showEventPopup(dayIdx, itemIdx) {
+        const item = itineraryData[dayIdx].items[itemIdx];
+        const navUrl = item.map ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}` : '';
+        const overlay = document.createElement('div');
+        overlay.className = 'ev-popup-overlay';
+        overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+        overlay.innerHTML = `<div class="ev-popup">
+            <div class="ev-popup-handle"></div>
+            <span class="ep-type ${item.type}">${typeLabels[item.type]}</span>
+            <div class="ep-time"><i class="fa-regular fa-clock"></i> ${item.time}　Day ${dayIdx + 1}　4/${calDayMeta[dayIdx].date} (週${calDayMeta[dayIdx].weekday})</div>
+            <div class="ep-title">${item.title}</div>
+            <div class="ep-content">${parseHighlights(item.content)}</div>
+            ${navUrl ? `<a href="${navUrl}" target="_blank" class="ep-nav"><i class="fa-solid fa-diamond-turn-right"></i> Google Maps 導航</a>` : ''}
+        </div>`;
+        document.body.appendChild(overlay);
+        // 下滑關閉
+        const popup = overlay.querySelector('.ev-popup');
+        let startY = 0, curY = 0;
+        popup.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+        popup.addEventListener('touchmove', (e) => {
+            curY = e.touches[0].clientY;
+            const dy = curY - startY;
+            if (dy > 0) popup.style.transform = `translateY(${dy}px)`;
+        }, { passive: true });
+        popup.addEventListener('touchend', () => {
+            if (curY - startY > 80) overlay.remove();
+            else popup.style.transform = '';
+            startY = 0; curY = 0;
+        });
+    }
+
+    function calSelectDay(idx) {
+        calSelectedDay = idx;
+        const content = document.getElementById('app-content');
+        content.classList.add('fade-out');
+        setTimeout(() => { renderCalendar(); content.classList.remove('fade-out'); }, 200);
+    }
+
+    // 左右滑動切換日期
+    let calTouchStartX = 0;
+    function calTouchStart(e) { calTouchStartX = e.touches[0].clientX; }
+    function calTouchEnd(e) {
+        const dx = e.changedTouches[0].clientX - calTouchStartX;
+        if (Math.abs(dx) > 60) {
+            if (dx < 0 && calSelectedDay < 5) calSelectDay(calSelectedDay + 1);
+            else if (dx > 0 && calSelectedDay > 0) calSelectDay(calSelectedDay - 1);
+        }
+    }
+
+    function renderCalendar() {
+        const container = document.getElementById('app-content');
+        const todayIdx = detectTodayIndex();
+        const dayData = itineraryData[calSelectedDay];
+        const meta = calDayMeta[calSelectedDay];
+        const events = estimateDurations(dayData.items);
+
+        // 找出當天時間範圍
+        const firstH = Math.floor(events[0].startH);
+        const lastEv = events[events.length - 1];
+        const lastH = Math.ceil(lastEv.startH + lastEv.duration);
+        const hourStart = Math.max(0, firstH - 1);
+        const hourEnd = Math.min(24, lastH + 1);
+
+        // 統計 tags
+        const counts = {};
+        dayData.items.forEach(it => { counts[it.type] = (counts[it.type] || 0) + 1; });
+
+        // === 日期選擇條 ===
+        let stripHtml = '<div class="cal-strip">';
+        calDayMeta.forEach((dm, i) => {
+            stripHtml += `<div class="cal-cell ${i === calSelectedDay ? 'active' : ''} ${i === todayIdx ? 'today' : ''}" onclick="calSelectDay(${i})">
+                <span class="cc-wd">週${dm.weekday}</span>
+                <span class="cc-dt">${dm.date}</span>
+                <span class="cc-lb">${dm.label}</span>
+            </div>`;
+        });
+        stripHtml += '</div>';
+
+        // === 統計標籤 ===
+        let tagsHtml = '<div class="cal-tags">';
+        ['attraction', 'restaurant', 'transport', 'hotel'].forEach(t => {
+            if (counts[t]) {
+                tagsHtml += `<span class="cal-tag"><span class="cal-tag-dot" style="background:${typeColors[t]}"></span>${typeLabels[t]} ${counts[t]}</span>`;
+            }
+        });
+        tagsHtml += '</div>';
+
+        // === 時間軸 ===
+        let gridHtml = '<div class="single-grid"><div class="single-grid-body" style="position:relative">';
+        for (let h = hourStart; h < hourEnd; h++) {
+            gridHtml += `<div class="sg-row"><div class="sg-time">${String(h).padStart(2, '0')}:00</div><div class="sg-col"></div></div>`;
+        }
+
+        // 事件區塊
+        events.forEach((ev, idx) => {
+            const top = (ev.startH - hourStart) * CAL_ROW_H;
+            const height = Math.max(36, ev.duration * CAL_ROW_H - 4);
+            const showDesc = height >= 60;
+            gridHtml += `<div class="sg-event ${ev.type}" style="top:${top}px;height:${height}px;left:52px;animation-delay:${idx * 0.06}s" onclick="showEventPopup(${calSelectedDay},${idx})">
+                <div class="se-time">${ev.time} <span class="se-badge ${ev.type}">${typeLabels[ev.type]}</span></div>
+                <div class="se-title">${ev.title}</div>
+                ${showDesc ? `<div class="se-desc">${ev.content ? ev.content.substring(0, 50) + '...' : ''}</div>` : ''}
+            </div>`;
+        });
+
+        // 現在時間線
+        if (calSelectedDay === todayIdx) {
+            const now = new Date();
+            const nowH = now.getHours() + now.getMinutes() / 60;
+            if (nowH >= hourStart && nowH <= hourEnd) {
+                const nowTop = (nowH - hourStart) * CAL_ROW_H;
+                gridHtml += `<div class="sg-now" style="top:${nowTop}px"></div>`;
+            }
+        }
+
+        gridHtml += '</div></div>';
+
+        container.innerHTML = `<div class="pb-10" ontouchstart="calTouchStart(event)" ontouchend="calTouchEnd(event)">
+            ${stripHtml}
+            <div class="cal-single-hdr">
+                <div>
+                    <div class="cal-single-title">Day ${calSelectedDay + 1}　${dayData.day.split(') ')[1] || ''}</div>
+                </div>
+                <div class="cal-single-sub"><i class="fa-solid fa-cloud-sun"></i> ${dayData.weather}</div>
+            </div>
+            ${tagsHtml}
+            ${gridHtml}
+            <div style="text-align:center;margin-top:12px;font-size:10px;color:#94a3b8;font-weight:600">
+                <i class="fa-solid fa-hand-pointer"></i> 點擊區塊查看詳情　<i class="fa-solid fa-arrows-left-right"></i> 左右滑動切換日期
+            </div>
+        </div>`;
     }
 
     function renderTips() {
@@ -275,11 +853,22 @@
         const btns = document.querySelectorAll('nav button');
         btns.forEach(b => b.classList.replace('text-pink-600', 'text-slate-400'));
         document.getElementById('tab-' + tab).classList.replace('text-slate-400', 'text-pink-600');
-        
-        if(tab === 'itinerary') renderItinerary();
-        else if(tab === 'booking') renderBooking();
-        else if(tab === 'checklist') renderChecklist();
-        else renderTips();
+
+        // Day nav 只在行程 tab 顯示
+        document.getElementById('day-nav-bar').classList.toggle('hidden', tab !== 'itinerary');
+
+        // 淡出再換內容
+        const content = document.getElementById('app-content');
+        content.classList.add('fade-out');
+        setTimeout(() => {
+            if(tab === 'itinerary') renderItinerary();
+            else if(tab === 'calendar') renderCalendar();
+            else if(tab === 'booking') renderBooking();
+            else if(tab === 'checklist') renderChecklist();
+            else renderTips();
+            content.classList.remove('fade-out');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 250);
     }
     renderItinerary();
 </script>
