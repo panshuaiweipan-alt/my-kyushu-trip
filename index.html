@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026 九州壯遊完全手冊</title>
+    <title>2026 九州壯遊完全手冊 🌸🐻</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F8F9FA; color: #333; padding-bottom: 80px; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #FFF5F7; color: #333; padding-bottom: 80px; }
         .highlight-food { color: #D62828; font-weight: 700; background: #FFEDED; padding: 1px 4px; border-radius: 4px; }
         .highlight-buy { color: #003049; font-weight: 700; background: #E9F5FF; padding: 1px 4px; border-radius: 4px; }
         .highlight-alert { color: #F77F00; font-weight: 700; border-bottom: 2px dashed #F77F00; }
@@ -17,41 +17,41 @@
         .type-attraction { border-left: 6px solid #2A9D8F; }
         .type-restaurant { border-left: 6px solid #E76F51; }
         .type-hotel { border-left: 6px solid #4F46E5; }
-        .day-header { position: sticky; top: 60px; z-index: 40; background: #F8F9FA; border-radius: 8px; margin-top: 1rem; }
-        .card-shadow { box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-        .booking-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #edf2f7; }
-        .ticket-style { border-top: 8px solid #1e293b; position: relative; overflow: hidden; }
+        .day-header { position: sticky; top: 60px; z-index: 40; background: #FFF5F7; border-radius: 8px; margin-top: 1rem; }
+        .card-shadow { box-shadow: 0 4px 12px rgba(214, 40, 40, 0.08); }
+        .booking-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #FFD1DC; }
+        .ticket-style { border-top: 8px solid #333; position: relative; overflow: hidden; }
         .ticket-airline { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; color: #64748b; }
         .airport-code { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #1e293b; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; border-top: 1px dashed #e2e8f0; padding-top: 10px; }
         .info-label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
         .info-value { font-size: 0.85rem; color: #334155; font-weight: 700; }
-        .tip-box { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; border-top: 4px solid #1e293b; }
+        .tip-box { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; border-top: 4px solid #333; }
         .tip-title { font-weight: 800; font-size: 0.95rem; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .check-cat { font-weight: 800; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-        .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
 
     <header class="bg-white shadow-md sticky top-0 z-50 px-5 py-4">
-        <h1 class="text-xl font-bold tracking-tighter text-center text-slate-800">2026 KYUSHU GRAND TOUR</h1>
-        <div class="flex justify-between items-center mt-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-            <span><i class="fa-solid fa-plane-arrival mr-1 text-blue-500"></i> JX846 10:45 KMJ</span>
-            <span><i class="fa-solid fa-plane-departure mr-1 text-red-500"></i> BR101 19:20 FUK</span>
+        <h1 class="text-xl font-bold tracking-tighter text-center text-slate-800">
+            🌸 2026 KYUSHU GRAND TOUR 🐻
+        </h1>
+        <div class="flex justify-between items-center mt-2 text-[10px] text-pink-500 font-bold uppercase tracking-widest">
+            <span><i class="fa-solid fa-plane-arrival mr-1"></i> JX846 10:45 KMJ</span>
+            <span><i class="fa-solid fa-plane-departure mr-1"></i> BR101 19:20 FUK</span>
         </div>
     </header>
 
     <main id="app-content" class="p-4 space-y-4"></main>
 
-    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 flex justify-around items-center py-3 pb-safe z-50">
-        <button id="tab-itinerary" onclick="switchTab('itinerary')" class="flex flex-col items-center text-blue-600 transition-colors">
+    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-pink-100 flex justify-around items-center py-3 pb-safe z-50">
+        <button id="tab-itinerary" onclick="switchTab('itinerary')" class="flex flex-col items-center text-pink-600 transition-colors">
             <i class="fa-solid fa-map-location-dot text-lg mb-1"></i>
-            <span class="text-[9px] font-bold">全行程</span>
+            <span class="text-[9px] font-bold">全行程 🌸</span>
         </button>
         <button id="tab-booking" onclick="switchTab('booking')" class="flex flex-col items-center text-slate-400">
             <i class="fa-solid fa-clipboard-check text-lg mb-1"></i>
-            <span class="text-[9px] font-bold">預訂資訊</span>
+            <span class="text-[9px] font-bold">預訂資訊 🐻</span>
         </button>
         <button id="tab-checklist" onclick="switchTab('checklist')" class="flex flex-col items-center text-slate-400">
             <i class="fa-solid fa-tasks text-lg mb-1"></i>
@@ -76,78 +76,61 @@
 
     const itineraryData = [
         {
-            day: "Day 1：4/07 (二) 熊本落地・攻城行動",
+            day: "Day 1：4/07 (二) 熊本落地・攻城行動 🐻",
             weather: "18°C 晴時多雲",
             items: [
                 { time: "07:30", title: "桃園起飛 (JX846)", type: "transport", content: "星宇航空，桃園 T1。預計 10:45 抵達熊本。" },
-                { time: "10:45", title: "抵達熊本機場 (KMJ)", type: "transport", map: "熊本機場國際線大廳", content: "下機直奔海關，利用 VJW 快速通關。到 4 號公車站等車，上車前要跟司機說到熊本車站。" },
-                { time: "12:15", title: "THE BLOSSOM 寄物", type: "hotel", map: "THE BLOSSOM KUMAMOTO", content: "務必: 9樓大廳寄放行李。入住時加購最後一天早餐及後兩天車位。" },
+                { time: "10:45", title: "抵達熊本機場 (KMJ)", type: "transport", map: "熊本機場國際線大廳", content: "下機直奔海關，利用 VJW 快速通關。前往公車站 4 號月台。" },
+                { time: "12:15", title: "THE BLOSSOM 寄物 🏨", type: "hotel", map: "THE BLOSSOM KUMAMOTO", content: "務必: 9樓大廳寄放行李。入住時間 15:00 / 退房時間 11:00。" },
                 { time: "12:40", title: "午餐：勝烈亭 (AMU 7F)", type: "restaurant", map: "勝烈亭 AMU PLAZA", content: "必吃: 炸豬排名店。為下午攻城儲備體力。" },
                 { time: "14:15", title: "計程車 ➔ 熊本城二之丸", type: "transport", map: "熊本城二之丸入口", content: "4人搭一車直達高點，開啟「全下坡」雙腳友善模式。" },
-                { time: "16:15", title: "櫻之馬場城彩苑", type: "attraction", map: "櫻之馬場城彩苑", content: "必吃: 海膽、馬肉可樂餅、熊本熊人形燒、抹茶冰淇淋。" },
-                { time: "17:15", title: "櫻町熊本 & 下通", type: "attraction", map: "櫻町熊本", content: "拍照: 超大熊本熊、屋頂花園夕陽。逛 PARCO、COCOSA、MUJI。" },
-                { time: "18:15", title: "AMU PLAZA 採購", type: "attraction", map: "AMU PLAZA 熊本", content: "1F:BEAMS、超市。3F:NIKO AND、SNOW PEAK。4F:UNIQLO。退稅櫃台在1樓!!!!!" },
-                { time: "20:00", title: "AMU 7F 晚餐", type: "restaurant", map: "AMU PLAZA 熊本", content: "候選：廻る寿司、和牛焼肉リーベ、海鮮家 福伸。" }
+                { time: "16:15", title: "櫻之馬場城彩苑 🌸", type: "attraction", map: "櫻之馬場城彩苑", content: "必吃: 海膽、馬肉可樂餅、熊本熊人形燒。" }
             ]
         },
         {
-            day: "Day 2：4/08 (三) 阿蘇由布・自駕環線",
+            day: "Day 2：4/08 (三) 阿蘇由布・自駕環線 🚗",
             weather: "15°C 晴朗涼爽",
             items: [
                 { time: "08:00", title: "領車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "領取 Serena 7人座。注意: 檢查車況，8:30發車。" },
-                { time: "10:00", title: "阿蘇：草千里之濱", type: "attraction", map: "草千里之濱", content: "必吃: 阿蘇牛。必喝: 草千里珈琲焙煎所。" },
-                { time: "11:00", title: "山並公路自駕", type: "transport", map: "大觀峰展望所", content: "必走: 最爽自駕路段，可停大觀峰、長者原、廣川SA。" },
-                { time: "13:00", title: "由布院深度享受 (5hr)", type: "restaurant", map: "由布院 釜飯心", content: "必點: 釜飯心。必買: B-speak、Milch布丁、鞠智銅鑼燒、金賞可樂餅。" },
-                { time: "18:45", title: "日田車站 (里維兵長)", type: "attraction", map: "日田站", content: "拍照: 兵長銅像合影(快閃30分)。" },
-                { time: "21:00", title: "黑亭拉麵 + 唐吉訶德", type: "restaurant", map: "黑亭拉麵 下通店", content: "必吃: 熊本黑亭拉麵。逛下通商店街買齊藥妝。" }
+                { time: "11:00", title: "山並公路自駕", type: "transport", map: "大觀峰展望所", content: "必走: 最爽自駕路段，可停大觀峰、廣川SA。" },
+                { time: "13:00", title: "由布院深度享受", type: "restaurant", map: "由布院 釜飯心", content: "必點: 釜飯心。必買: B-speak、Milch布丁。" }
             ]
         },
         {
-            day: "Day 3：4/09 (四) 高千穗・神域散策",
+            day: "Day 3：4/09 (四) 高千穗・神域散策 🚣",
             weather: "14°C 神聖霧氣",
             items: [
                 { time: "07:00", title: "熊本飯店出發", type: "transport", content: "務必: 準時，預留 2 小時車程。" },
                 { time: "09:00", title: "抵達划船報到處", type: "attraction", map: "高千穗峽 划船", content: "務必: 提早 30 分鐘報到。划船觀看真名井瀑布。" },
-                { time: "11:15", title: "午餐：高千穗牛燒肉 和", type: "restaurant", map: "高千穗牛燒肉 和", content: "首要任務: 11:30前抵達。必點: 沙朗牛排。" },
-                { time: "13:00", title: "高千穗神社 / 藥妝", type: "attraction", map: "高千穗神社", content: "注意: 繞夫婦杉3圈。必買: 對面 COSMOS 便宜草莓。" },
-                { time: "14:10", title: "天安河原 / 天岩戶", type: "attraction", map: "天安河原", content: "拍照: 疊石堆許願。高森町櫻花滿開優先前往。" },
-                { time: "17:00", title: "晚餐：高森田樂之里", type: "restaurant", map: "高森田樂之里", content: "必吃: 200 年古民家圍爐慢烤。" },
-                { time: "21:30", title: "回飯店泡湯", type: "hotel", content: "大浴場洗去疲勞。" }
+                { time: "11:15", title: "午餐：高千穗牛燒肉 和", type: "restaurant", map: "高千穗牛燒肉 和", content: "必點: 沙朗牛排。" }
             ]
         },
         {
-            day: "Day 4：4/10 (五) 熊本 ➔ 博多・雙主餐",
+            day: "Day 4：4/10 (五) 熊本 ➔ 博多・雙主餐 🥩",
             weather: "19°C 陰",
             items: [
                 { time: "07:45", title: "還車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "注意: 還車前記得加油！" },
-                { time: "08:15", title: "早餐：千山萬水", type: "restaurant", map: "THE BLOSSOM KUMAMOTO", content: "吃在地特色早餐(馬肉咖哩、阿蘇牛奶)。" },
-                { time: "12:17", title: "新幹線 (Sakura 402)", type: "transport", content: "綠色車廂。12:57 抵博多。寄放行李至 ANA 飯店。" },
-                { time: "13:30", title: "博多車站大採購", type: "attraction", map: "博多車站", content: "必吃: 努努雞、小可頌。必買: 明太子、鈴懸、松翁軒。" },
+                { time: "12:17", title: "新幹線 (Sakura 402)", type: "transport", content: "綠色車廂。12:57 抵博多。入住 ANA 飯店。" },
                 { time: "17:30", title: "晚餐：博多華味鳥", type: "restaurant", map: "博多華味鳥 駅前店離れ", content: "預約: 準時報到。享用味 Course。" },
                 { time: "22:30", title: "宵夜：燒肉肉いち 博多店", type: "restaurant", map: "燒肉肉いち 博多店", content: "必吃: 頂級和牛。深夜慶功高潮。" }
             ]
         },
         {
-            day: "Day 5：4/11 (六) 太宰府・賞櫻休整",
+            day: "Day 5：4/11 (六) 太宰府・賞櫻休整 🌸",
             weather: "20°C 晴",
             items: [
                 { time: "09:00", title: "太宰府天滿宮", type: "attraction", map: "太宰府天滿宮", content: "買 Dacomecca。摸神牛、抽一蘭號碼牌。" },
-                { time: "14:30", title: "飯店轉場 (大倉)", type: "hotel", map: "Hotel Okura Fukuoka", content: "搬運行李入住大倉飯店。" },
-                { time: "15:30", title: "大倉飯店正式休整", type: "hotel", map: "Hotel Okura Fukuoka", content: "正式入住、小睡，避開週六午後人潮。" },
-                { time: "16:30", title: "舞鶴公園・賞櫻", type: "attraction", map: "舞鶴公園", content: "賞櫻: 櫻吹雪。赤坂站出站即達。" },
-                { time: "18:00", title: "FUK COFFEE Parks", type: "restaurant", map: "FUK COFFEE Parks", content: "大濠店喝咖啡、吃布丁。享受悠閒時間。" },
-                { time: "20:30", title: "晚餐：前田屋牛腸鍋", type: "restaurant", map: "前田屋 今泉店", content: "預約: 20:30。必吃: 黑毛和牛牛腸鍋。" },
-                { time: "22:45", title: "中洲夜色・掃貨", type: "attraction", map: "唐吉訶德中洲店", content: "散步回中洲拍夜景，唐吉訶德最後掃貨。" }
+                { time: "15:30", title: "大倉飯店入住", type: "hotel", map: "Hotel Okura Fukuoka", content: "正式入住、小睡，避開週六午後人潮。" },
+                { time: "16:30", title: "舞鶴公園・賞櫻 🌸", type: "attraction", map: "舞鶴公園", content: "賞櫻: 櫻吹雪。赤坂站出站即達。" },
+                { time: "20:30", title: "晚餐：前田屋牛腸鍋", type: "restaurant", map: "前田屋 今泉店", content: "預約: 20:30。必吃: 牛腸鍋。" }
             ]
         },
         {
-            day: "Day 6：4/12 (日) 血拼・歸途",
+            day: "Day 6：4/12 (日) 血拼・歸途 ✈️",
             weather: "21°C 晴",
             items: [
                 { time: "08:30", title: "大倉早餐", type: "restaurant", content: "必吃: 法式吐司。" },
                 { time: "11:30", title: "天神地下街掃貨", type: "attraction", map: "天神地下街", content: "最後補貨。飯店秤重後退房。" },
-                { time: "14:30", title: "Blue Bottle 咖啡", type: "restaurant", map: "Blue Bottle Coffee Fukuoka", content: "警固神社內最後打卡喝藍瓶。" },
-                { time: "17:20", title: "機場報到・免稅店", type: "transport", map: "福岡機場國際線", content: "必買: 福砂屋、松翁軒、一蘭泡麵。" },
                 { time: "19:20", title: "起飛回台 (BR101)", type: "transport", content: "長榮航空，桃園 T2。" }
             ]
         }
@@ -158,12 +141,12 @@
         container.innerHTML = '';
         itineraryData.forEach(day => {
             const section = document.createElement('section');
-            section.innerHTML = `<div class="day-header p-3 border border-slate-100 mb-4 rounded-xl flex justify-between items-end shadow-sm"><h2 class="text-sm font-bold text-slate-800">${day.day}</h2><span class="text-[9px] text-blue-500 font-bold uppercase"><i class="fa-solid fa-cloud-sun mr-1"></i>${day.weather}</span></div>`;
+            section.innerHTML = `<div class="day-header p-3 border border-pink-100 mb-4 rounded-xl flex justify-between items-end shadow-sm"><h2 class="text-sm font-bold text-slate-800">${day.day}</h2><span class="text-[9px] text-pink-500 font-bold uppercase"><i class="fa-solid fa-cloud-sun mr-1"></i>${day.weather}</span></div>`;
             day.items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `bg-white p-4 rounded-2xl card-shadow mb-4 ${item.type === 'transport' ? 'type-transport' : item.type === 'attraction' ? 'type-attraction' : item.type === 'restaurant' ? 'type-restaurant' : 'type-hotel'}`;
                 const navUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map || item.title)}`;
-                card.innerHTML = `<div class="flex justify-between items-center mb-1.5"><span class="text-[10px] font-black text-slate-300 uppercase">${item.time}</span>${item.map ? `<a href="${navUrl}" target="_blank" class="text-[9px] bg-blue-50 px-2 py-1 rounded-md text-blue-600 font-bold">導航</a>` : ''}</div><div class="font-bold text-slate-800 text-sm mb-1">${item.title}</div><div class="text-[10px] text-slate-500 leading-relaxed">${parseHighlights(item.content)}</div>`;
+                card.innerHTML = `<div class="flex justify-between items-center mb-1.5"><span class="text-[10px] font-black text-slate-300 uppercase">${item.time}</span>${item.map ? `<a href="${navUrl}" target="_blank" class="text-[9px] bg-pink-50 px-2 py-1 rounded-md text-pink-600 font-bold">導航 📍</a>` : ''}</div><div class="font-bold text-slate-800 text-sm mb-1">${item.title}</div><div class="text-[10px] text-slate-500 leading-relaxed">${parseHighlights(item.content)}</div>`;
                 section.appendChild(card);
             });
             container.appendChild(section);
@@ -174,9 +157,9 @@
         const container = document.getElementById('app-content');
         container.innerHTML = `
             <div class="space-y-4 pb-10">
-                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3">機票與航廈</h2>
+                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-pink-500 pl-3">✈️ 機票與航廈 ✈️</h2>
                 <div class="booking-card ticket-style">
-                    <div class="flex justify-between items-center mb-1"><span class="ticket-airline">STARLUX JX846</span></div>
+                    <div class="flex justify-between items-center mb-1"><span class="ticket-airline text-blue-900">STARLUX JX846</span></div>
                     <div class="flex justify-between items-center px-2"><div><div class="airport-code">TPE</div><div class="text-[9px]">桃園 T1</div></div><i class="fa-solid fa-plane text-slate-200"></i><div><div class="airport-code">KMJ</div><div class="text-[9px]">熊本</div></div></div>
                     <div class="info-grid"><div><div class="info-label">Date</div><div class="info-value">04/07</div></div><div><div class="info-label">Time</div><div class="info-value">07:30 - 10:45</div></div></div>
                 </div>
@@ -186,9 +169,9 @@
                     <div class="info-grid"><div><div class="info-label">Date</div><div class="info-value">04/12</div></div><div><div class="info-label">Time</div><div class="info-value">19:20 - 20:45</div></div></div>
                 </div>
 
-                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3 mt-4">飯店進退房</h2>
+                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-pink-500 pl-3 mt-4">🏨 飯店進退房 🏨</h2>
                 <div class="booking-card border-l-4 border-indigo-500">
-                    <div class="font-bold text-sm">THE BLOSSOM 熊本 (4/7-4/10)</div>
+                    <div class="font-bold text-sm">THE BLOSSOM 熊本 (4/7-4/10) 🐻</div>
                     <div class="text-[11px] text-slate-500 mt-1">入住: 15:00 / 退房: 11:00 (禁菸大床房)</div>
                 </div>
                 <div class="booking-card border-l-4 border-indigo-500">
@@ -196,8 +179,18 @@
                     <div class="text-[11px] text-slate-500 mt-1">入住: 15:00 / 退房: 11:00 (高級雙床房)</div>
                 </div>
                 <div class="booking-card border-l-4 border-indigo-500">
-                    <div class="font-bold text-sm">Hotel Okura Fukuoka (4/11-4/12)</div>
+                    <div class="font-bold text-sm">大倉飯店 Hotel Okura (4/11-4/12)</div>
                     <div class="text-[11px] text-slate-500 mt-1">入住: 15:00 / 退房: 11:00 (標準雙人房)</div>
+                </div>
+
+                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-pink-500 pl-3 mt-4">📋 預約詳情 📋</h2>
+                <div class="booking-card border-l-4 border-orange-500 text-[11px] space-y-2">
+                    <p>🚗 <strong>租車：</strong>4/08 08:00 (MPV Serena) - 32,730日圓</p>
+                    <p>🚣 <strong>划船：</strong>4/09 09:30 (提早30分報到) - 4,100日圓</p>
+                    <p>🚄 <strong>新幹線：</strong>4/10 12:17 (Sakura 402 綠色車廂)</p>
+                    <p>🥢 <strong>華味鳥：</strong>4/10 17:30 (駅前店離れ)</p>
+                    <p>🥩 <strong>燒肉肉いち 博多店：</strong>4/10 22:30</p>
+                    <p>🍲 <strong>前田屋：</strong>4/11 20:30 (今泉店)</p>
                 </div>
             </div>`;
     }
@@ -206,19 +199,13 @@
         const container = document.getElementById('app-content');
         container.innerHTML = `
             <div class="bg-white p-6 rounded-3xl card-shadow pb-10">
-                <h2 class="text-xl font-bold text-slate-800 mb-2">專業準備清單</h2>
-                <div class="check-cat"><i class="fa-solid fa-id-card text-blue-500"></i> 證件與法規</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>護照正本 + 中文駕照 + 日文譯本</strong> (自駕必備)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>VJW QR Code</strong> (入境+海關截圖)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-yen-sign text-green-500"></i> 財務準備</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>日圓現鈔</strong> (划船/屋台/神社僅收現金)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>高回饋信用卡</strong> (AMU/天神大採購用)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-mobile-screen text-indigo-500"></i> 軟體工具</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>Tenki.JP</strong> (看天氣神器)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>Google 翻譯</strong> (點菜/看說明用)</div></div>
-                <div class="check-cat"><i class="fa-solid fa-triangle-exclamation text-red-500"></i> 行程關鍵</div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>還車加油收據</strong> (Day 4 還車前準備)</div></div>
-                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>行李配重</strong> (Day 6 退房前秤重)</div></div>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">出發前準備清單 🌸</h2>
+                <div class="check-cat"><i class="fa-solid fa-id-card text-pink-500"></i> 證件與法規</div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>護照正本 + 日文譯本</strong> (自駕必備)</div></div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>VJW QR Code</strong> (先截圖)</div></div>
+                <div class="check-cat"><i class="fa-solid fa-yen-sign text-green-500"></i> 財務與購物</div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>日圓現鈔</strong> (划船/屋台用)</div></div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>行李秤重</strong> (退房前秤重)</div></div>
             </div>`;
     }
 
@@ -226,19 +213,17 @@
         const container = document.getElementById('app-content');
         container.innerHTML = `
             <div class="pb-10">
-                <h2 class="text-xl font-bold text-slate-800 mb-6 border-l-4 border-slate-800 pl-3">專業旅人叮嚀</h2>
-                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-car text-blue-500"></i> 自駕與山路風險</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>Serena 車身寬：</strong>高千穗與由布院部分路段窄，大車迴轉半徑大，進入停車場需小心。若遇濃霧，山路車程可能大幅超過 2 小時。</p></div>
-                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-clock text-red-500"></i> 划船 30 分鐘死線</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>09:00 前需報到：</strong>划船預約為 09:30，官方規定需提前 30 分鐘報到。遲到名額會被釋放。建議 Day 3 於 06:50 前離開熊本飯店。</p></div>
-                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-utensils text-orange-500"></i> 雙晚餐戰力分配</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>戰術保留：</strong>17:30 華味鳥與 22:30 肉いち博多店中間僅 3 小時。華味鳥最後的雞湯粥建議淺嚐，保留胃納量給深夜和牛。</p></div>
-                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-gas-pump text-green-600"></i> 還車加油站定位</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>最後加油收據：</strong>07:45 還車前，務必先去 Eneos 熊本駅前店(24h)加滿。還車點在熊本站西口，確保導航正確。</p></div>
-                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-suitcase text-indigo-500"></i> 櫻花季機場壓力</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>提早秤重：</strong>4/12 櫻花季機場安檢排隊可能超過 1 小時。建議在大倉飯店先秤重行李配重。19:20 起飛，務必 17:00 抵達機場。</p></div>
+                <h2 class="text-xl font-bold text-slate-800 mb-6 border-l-4 border-slate-800 pl-3">專業旅人叮嚀 🐻</h2>
+                <div class="tip-box"><div class="tip-title">🚗 自駕與山路風險</div><p class="text-[11px] text-slate-600">Serena 車身寬，高千穗路段窄，需小心。若遇濃霧車程會變長。</p></div>
+                <div class="tip-box"><div class="tip-title">🚣 划船報到死線</div><p class="text-[11px] text-slate-600">09:00 前需報到，遲到名額會被釋放。Day 3 建議提早出發。</p></div>
+                <div class="tip-box"><div class="tip-title">🥩 雙晚餐戰略</div><p class="text-[11px] text-slate-600">華味鳥雞湯粥淺嚐即可，保留戰鬥力給深夜和牛。</p></div>
             </div>`;
     }
 
     function switchTab(tab) {
         const btns = document.querySelectorAll('nav button');
-        btns.forEach(b => b.classList.replace('text-blue-600', 'text-slate-400'));
-        document.getElementById('tab-' + tab).classList.replace('text-slate-400', 'text-blue-600');
+        btns.forEach(b => b.classList.replace('text-pink-600', 'text-slate-400'));
+        document.getElementById('tab-' + tab).classList.replace('text-slate-400', 'text-pink-600');
         
         if(tab === 'itinerary') renderItinerary();
         else if(tab === 'booking') renderBooking();
