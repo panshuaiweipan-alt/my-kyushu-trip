@@ -28,6 +28,8 @@
         .info-value { font-size: 0.85rem; color: #334155; font-weight: 700; }
         .tip-box { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; border-top: 4px solid #1e293b; }
         .tip-title { font-weight: 800; font-size: 0.95rem; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .check-cat { font-weight: 800; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
@@ -35,15 +37,15 @@
     <header class="bg-white shadow-md sticky top-0 z-50 px-5 py-4">
         <h1 class="text-xl font-bold tracking-tighter text-center text-slate-800">2026 KYUSHU GRAND TOUR</h1>
         <div class="flex justify-between items-center mt-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-            <span><i class="fa-solid fa-plane-arrival mr-1 text-blue-500"></i> JX846 10:45</span>
-            <span><i class="fa-solid fa-plane-departure mr-1 text-red-500"></i> BR101 19:20</span>
+            <span><i class="fa-solid fa-plane-arrival mr-1 text-blue-500"></i> JX846 10:45 KMJ</span>
+            <span><i class="fa-solid fa-plane-departure mr-1 text-red-500"></i> BR101 19:20 FUK</span>
         </div>
     </header>
 
     <main id="app-content" class="p-4 space-y-4"></main>
 
     <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 flex justify-around items-center py-3 pb-safe z-50">
-        <button id="tab-itinerary" onclick="switchTab('itinerary')" class="flex flex-col items-center text-blue-600">
+        <button id="tab-itinerary" onclick="switchTab('itinerary')" class="flex flex-col items-center text-blue-600 transition-colors">
             <i class="fa-solid fa-map-location-dot text-lg mb-1"></i>
             <span class="text-[9px] font-bold">全行程</span>
         </button>
@@ -68,7 +70,7 @@
             .replace(/必吃[:：]?\s*([^，。！、\s]+)/g, '<span class="highlight-food">🍴 $1</span>')
             .replace(/必點[:：]?\s*([^，。！、\s]+)/g, '<span class="highlight-food">🔥 $1</span>')
             .replace(/必買[:：]?\s*([^，。！、\s]+)/g, '<span class="highlight-buy">🛍️ $1</span>')
-            .replace(/(加油|提早|準時|預約|注意|務必|拍照)[:：]?\s*([^，。！、\s]+)/g, '<span class="highlight-alert">⚠️ $1: $2</span>')
+            .replace(/(加油|提早|準時|預約|注意|務必|拍照|首要任務)[:：]?\s*([^，。！、\s]+)/g, '<span class="highlight-alert">⚠️ $1: $2</span>')
             .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#2563eb;text-decoration:underline;">🔗 連結</a>');
     }
 
@@ -77,56 +79,72 @@
             day: "Day 1：4/07 (二) 熊本落地・攻城行動",
             weather: "18°C 晴時多雲",
             items: [
-                { time: "07:30", title: "桃園起飛 (JX846)", type: "transport", content: "星宇航空，第一航廈。預計 10:45 抵達熊本。" },
-                { time: "12:15", title: "THE BLOSSOM 寄行李", type: "hotel", map: "THE BLOSSOM KUMAMOTO", content: "務必: 直奔 9 樓大廳寄放行李。房型：禁菸大床房。" },
-                { time: "12:40", title: "午餐：勝烈亭 (AMU 7F)", type: "restaurant", map: "勝烈亭 AMU PLAZA", content: "必吃: 炸豬排名店。" },
-                { time: "14:15", title: "熊本城二之丸", type: "attraction", map: "熊本城二之丸入口", content: "計程車直達高點，開啟下坡模式。" }
+                { time: "07:30", title: "桃園起飛 (JX846)", type: "transport", content: "星宇航空，第一航廈。" },
+                { time: "10:45", title: "抵達熊本機場 (KMJ)", type: "transport", map: "熊本機場國際線大廳", content: "下機直奔海關，利用 VJW 快速通關。到 4 號公車站等車，跟司機說到熊本站。 [cite: 86]" },
+                { time: "12:15", title: "THE BLOSSOM 寄物", type: "hotel", map: "THE BLOSSOM KUMAMOTO", content: "務必: 9樓大廳寄放行李。入住時加購最後一天早餐及後兩天車位。 [cite: 86, 13]" },
+                { time: "12:40", title: "午餐：勝烈亭 (AMU 7F)", type: "restaurant", map: "勝烈亭 AMU PLAZA", content: "必吃: 炸豬排名店。 [cite: 86]" },
+                { time: "14:15", title: "計程車 ➔ 熊本城二之丸", type: "transport", map: "熊本城二之丸入口", content: "4人搭一車直達高點，開啟「全下坡」雙腳友善模式。 [cite: 86]" },
+                { time: "16:15", title: "櫻之馬場城彩苑", type: "attraction", map: "櫻之馬場城彩苑", content: "必吃: 海膽、馬肉可樂餅、熊本熊人形燒、抹茶冰淇淋。 [cite: 86]" },
+                { time: "17:15", title: "櫻町熊本 & 下通", type: "attraction", map: "櫻町熊本", content: "拍照: 超大熊本熊、頂級屋頂花園夕陽。逛 PARCO、COCOSA、MUJI。 [cite: 86]" },
+                { time: "20:00", title: "AMU 7F 晚餐", type: "restaurant", map: "AMU PLAZA 熊本", content: "候選：壽司めっけもん、和牛焼肉リーベ、阿蘇はなびし。 [cite: 86]" }
             ]
         },
         {
             day: "Day 2：4/08 (三) 阿蘇由布・自駕環線",
             weather: "15°C 涼爽",
             items: [
-                { time: "08:00", title: "領車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "領取 Serena 7人座。注意: 檢查車況。" },
-                { time: "10:00", title: "阿蘇草千里", type: "attraction", map: "草千里之濱", content: "必喝: 草千里珈琲。賞草原風景。" },
-                { time: "13:00", title: "由布院美食", type: "restaurant", map: "由布院 釜飯心", content: "必點: 釜飯心。必買: Milch布丁。" }
+                { time: "08:00", title: "領車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "領取 Serena 7人座。注意: 檢查車況，8:30發車。 [cite: 92]" },
+                { time: "10:00", title: "阿蘇：草千里之濱", type: "attraction", map: "草千里之濱", content: "必吃: 阿蘇牛。必喝: 草千里珈琲焙煎所。 [cite: 92]" },
+                { time: "11:00", title: "山並公路自駕", type: "transport", map: "大觀峰展望所", content: "必走: 最爽自駕路段。可停道之驛、大觀峰、長者原。 [cite: 92]" },
+                { time: "13:00", title: "由布院深度享受 (5hr)", type: "restaurant", map: "由布院 釜飯心", content: "必點: 釜飯心 (先拿號碼牌)。必買: B-speak、鞠智銅鑼燒、Milch布丁。 [cite: 92]" },
+                { time: "18:45", title: "日田車站 (里維兵長)", type: "attraction", map: "日田站", content: "拍照: 兵長銅像合影(快閃30分)。回程可停山田/廣川SA。 [cite: 92, 96]" },
+                { time: "21:00", title: "黑亭拉麵 + 唐吉訶德", type: "restaurant", map: "黑亭拉麵 下通店", content: "必吃: 熊本黑亭拉麵。藥妝在熊本唐吉買齊。 [cite: 92]" }
             ]
         },
         {
             day: "Day 3：4/09 (四) 高千穗・神域散策",
             weather: "14°C 神聖霧氣",
             items: [
-                { time: "07:00", title: "出發高千穗", type: "transport", content: "務必: 準時出發，預留 2 小時車程。" },
-                { time: "09:30", title: "高千穗峽划船", type: "attraction", map: "高千穗峽 划船", content: "預約: 09:30 報到。拍照: 真名井瀑布。" },
-                { time: "11:15", title: "午餐：高千穗牛燒肉 和", type: "restaurant", map: "高千穗牛燒肉 和", content: "必點: 沙朗牛排套餐。" }
+                { time: "07:00", title: "熊本飯店出發", type: "transport", content: "務必: 準時，預留 2 小時車程。 [cite: 102]" },
+                { time: "09:00", title: "抵達划船報到處", type: "attraction", map: "高千穗峽 划船", content: "務必: 提早 30 分鐘報到。划船觀看真名井瀑布。 [cite: 102]" },
+                { time: "11:15", title: "午餐：高千穗牛燒肉 和", type: "restaurant", map: "高千穗牛燒肉 和", content: "首要任務: 11:30前抵達衝第一波。必點: 沙朗牛排。 [cite: 102]" },
+                { time: "13:00", title: "高千穗神社 / 藥妝", type: "attraction", map: "高千穗神社", content: "注意: 繞夫婦杉3圈。必買: 對面 COSMOS 便宜草莓。 [cite: 102]" },
+                { time: "14:10", title: "天安河原 / 天岩戶", type: "attraction", map: "天安河原", content: "拍照: 疊石堆許願。路過可看高森町櫻花節(滿開優先)。 " },
+                { time: "17:00", title: "晚餐：高森田樂之里", type: "restaurant", map: "高森田樂之里", content: "必吃: 200 年古民家圍爐慢烤。 [cite: 102]" },
+                { time: "21:30", title: "THE BLOSSOM 泡湯", type: "attraction", content: "大浴場洗去自駕疲勞。 [cite: 102]" }
             ]
         },
         {
             day: "Day 4：4/10 (五) 熊本 ➔ 博多・雙主餐",
             weather: "19°C 晴",
             items: [
-                { time: "07:45", title: "熊本車站還車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "注意: 還車前記得加油！" },
-                { time: "12:17", title: "新幹線 (Sakura 402)", type: "transport", content: "12:17 熊本發車。艙等：綠色車廂。" },
-                { time: "17:30", title: "晚餐：博多華味鳥", type: "restaurant", map: "博多華味鳥 駅前店", content: "預約: 駅前店離れ。正宗水炊鍋。" },
-                { time: "22:30", title: "宵夜：燒肉肉いち 博多店", type: "restaurant", map: "燒肉肉いち 博多店", content: "必點: 頂級和牛。注意: 是博多店。" }
+                { time: "07:45", title: "還車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "注意: 還車前記得加油！ " },
+                { time: "10:00", title: "AMU 熊本最後補貨", type: "attraction", map: "AMU PLAZA 熊本", content: "必買: 熊本赤牛洋芋片、古今堂濃厚生起司蛋糕。 " },
+                { time: "12:17", title: "新幹線 (Sakura 402)", type: "transport", content: "綠色車廂。12:57 抵博多。" },
+                { time: "13:30", title: "博多車站大採購", type: "attraction", map: "博多車站", content: "必吃: 努努雞、小可頌。必買: 明太子、鈴懸銅鑼燒。 " },
+                { time: "17:30", title: "晚餐：博多華味鳥", type: "restaurant", map: "博多華味鳥 駅前店", content: "預約: 駅前店離れ。享用味 Course。" },
+                { time: "22:30", title: "宵夜：燒肉肉いち 博多店", type: "restaurant", map: "燒肉肉いち 博多店", content: "必吃: 頂級和牛。" }
             ]
         },
         {
             day: "Day 5：4/11 (六) 太宰府・賞櫻休整",
-            weather: "20°C 晴天",
+            weather: "20°C 晴",
             items: [
-                { time: "09:00", title: "太宰府天滿宮", type: "attraction", map: "太宰府天滿宮", content: "注意: 摸神牛。必吃: 梅枝餅。" },
-                { time: "15:30", title: "入住大倉飯店", type: "hotel", map: "Hotel Okura Fukuoka", content: "房型：標準雙人房。正式入房休息。" },
-                { time: "20:30", title: "晚餐：前田屋牛腸鍋", type: "restaurant", map: "前田屋 今泉店", content: "預約: 20:30。必吃: 牛腸鍋。" }
+                { time: "09:00", title: "太宰府天滿宮", type: "attraction", map: "太宰府天滿宮", content: "搭車前買 Dacomecca。摸神牛、抽一蘭號碼牌。 " },
+                { time: "15:30", title: "大倉飯店正式休整", type: "hotel", map: "Hotel Okura Fukuoka", content: "正式入住、小睡，避開週六午後人潮。 " },
+                { time: "16:30", title: "舞鶴公園・賞櫻", type: "attraction", map: "舞鶴公園", content: "賞櫻: 櫻吹雪。赤坂站 2 號出口出站。 " },
+                { time: "20:30", title: "晚餐：前田屋牛腸鍋", type: "restaurant", map: "前田屋 今泉店", content: "預約: 今泉店。必吃: 黑毛和牛牛腸鍋。" }
             ]
         },
         {
-            day: "Day 6：4/12 (日) 最後血拼・歸途",
+            day: "Day 6：4/12 (日) 血拼・歸途",
             weather: "21°C 晴",
             items: [
-                { time: "08:30", title: "大倉法式吐司早餐", type: "restaurant", content: "必吃: 大倉名物法式吐司。" },
-                { time: "11:30", title: "天神地下街掃貨", type: "attraction", map: "天神地下街", content: "最後補貨時間。掃蕩名產。" },
-                { time: "19:20", title: "福岡起飛 (BR101)", type: "transport", content: "長榮航空，抵達桃園 T2 (20:45)。" }
+                { time: "08:30", title: "大倉早餐", type: "restaurant", content: "必吃: 法式吐司。 [cite: 125]" },
+                { time: "11:30", title: "天神地下街掃貨", type: "attraction", map: "天神地下街", content: "最後補貨。飯店秤重後退房。 [cite: 125]" },
+                { time: "14:30", title: "Blue Bottle 藍瓶咖啡", type: "restaurant", map: "Blue Bottle Coffee Fukuoka", content: "注意: 警固神社內最後打卡。 [cite: 125]" },
+                { time: "17:20", title: "機場報到・免稅店", type: "transport", map: "福岡機場國際線", content: "必買: 福砂屋、一蘭泡麵、甘王草莓夾心餅。 [cite: 125]" },
+                { time: "19:20", title: "起飛回台 (BR101)", type: "transport", content: "長榮航空，桃園 T2。" }
             ]
         }
     ];
@@ -152,23 +170,21 @@
         const container = document.getElementById('app-content');
         container.innerHTML = `
             <div class="space-y-4 pb-10">
-                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3">機票資訊</h2>
-                <div class="booking-card ticket-style"><div class="ticket-airline text-blue-900">STARLUX JX846</div><div class="flex justify-between items-center"><div class="airport-code">TPE</div><i class="fa-solid fa-plane text-slate-200"></i><div class="airport-code">KMJ</div></div><div class="info-grid"><div><div class="info-label">Date</div><div class="info-value">04/07</div></div><div><div class="info-label">Time</div><div class="info-value">07:30-10:45</div></div></div></div>
-                <div class="booking-card ticket-style" style="border-top-color:#00813f;"><div class="ticket-airline text-green-800">EVA AIR BR101</div><div class="flex justify-between items-center"><div class="airport-code">FUK</div><i class="fa-solid fa-plane text-slate-200"></i><div class="airport-code">TPE</div></div><div class="info-grid"><div><div class="info-label">Date</div><div class="info-value">04/12</div></div><div><div class="info-label">Time</div><div class="info-value">19:20-20:45</div></div></div></div>
+                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3">機票資訊 (航廈細節)</h2>
+                <div class="booking-card ticket-style"><div class="ticket-airline">STARLUX JX846</div><div class="flex justify-between items-center px-2"><div class="airport-code">TPE</div><i class="fa-solid fa-plane text-slate-200"></i><div class="airport-code">KMJ</div></div><div class="info-grid"><div><div class="info-label">航廈</div><div class="info-value">桃園 T1</div></div><div><div class="info-label">Time</div><div class="info-value">07:30 - 10:45</div></div></div></div>
+                <div class="booking-card ticket-style" style="border-top-color:#00813f;"><div class="ticket-airline">EVA AIR BR101</div><div class="flex justify-between items-center px-2"><div class="airport-code">FUK</div><i class="fa-solid fa-plane text-slate-200"></i><div class="airport-code">TPE</div></div><div class="info-grid"><div><div class="info-label">航廈</div><div class="info-value">桃園 T2</div></div><div><div class="info-label">Time</div><div class="info-value">19:20 - 20:45</div></div></div></div>
 
-                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3 mt-4">飯店資訊</h2>
-                <div class="booking-card border-l-4 border-indigo-500"><div class="font-bold text-sm">THE BLOSSOM 熊本 (4/7-4/10)</div><div class="text-[11px] text-slate-500 mt-1">禁菸大床房 / 熊本市西区春日3-15-26</div></div>
-                <div class="booking-card border-l-4 border-indigo-500"><div class="font-bold text-sm">ANA Crowne Plaza (4/10-4/11)</div><div class="text-[11px] text-slate-500 mt-1">高級雙床房 (禁菸) / 博多駅前3-3-3</div></div>
-                <div class="booking-card border-l-4 border-indigo-500"><div class="font-bold text-sm">大倉飯店 Hotel Okura (4/11-4/12)</div><div class="text-[11px] text-slate-500 mt-1">標準雙人房 (禁菸) / 博多区下川端町3-2</div></div>
+                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3 mt-4">飯店資訊 (入住時間)</h2>
+                <div class="booking-card border-l-4 border-indigo-500"><div class="font-bold text-sm">THE BLOSSOM 熊本 (4/7-4/10)</div><div class="text-[11px] text-slate-500 mt-1"><p>入住 15:00 / 退房 11:00</p><p>房型：禁菸大床房 / 熊本市西区春日3-15-26</p></div></div>
+                <div class="booking-card border-l-4 border-indigo-500"><div class="font-bold text-sm">ANA Crowne Plaza (4/10-4/11)</div><div class="text-[11px] text-slate-500 mt-1"><p>入住 15:00-02:00 / 退房 11:00</p><p>房型：高級雙床房 / 福岡市博多区博多駅前3-3-3</p></div></div>
+                <div class="booking-card border-l-4 border-indigo-500"><div class="font-bold text-sm">大倉飯店 Hotel Okura (4/11-4/12)</div><div class="text-[11px] text-slate-500 mt-1"><p>入住 15:00 / 退房 11:00</p><p>房型：標準雙人房 / 福岡市博多区下川端町3-2</p></div></div>
 
-                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3 mt-4">預約匯整</h2>
-                <div class="booking-card border-l-4 border-orange-500 font-bold text-[11px] text-slate-600 space-y-1">
-                    <p>🚗 租車：4/08 08:00 (MPV Serena)</p>
-                    <p>🚣 划船：4/09 09:30 (高千穗峽)</p>
+                <h2 class="text-lg font-bold text-slate-800 border-l-4 border-slate-800 pl-3 mt-4">預約詳情</h2>
+                <div class="booking-card border-l-4 border-orange-500 text-[11px] space-y-1">
+                    <p>🚗 租車：4/08 08:00 (Serena 7人座) - 32,730日圓</p>
+                    <p>🚣 划船：4/09 09:30 (提早30分報到) - 4,100日圓</p>
                     <p>🚄 新幹線：4/10 12:17 (Sakura 402 綠色車廂)</p>
-                </div>
-                <div class="booking-card border-l-4 border-red-500 font-bold text-[11px] text-slate-600 space-y-1">
-                    <p>🥢 華味鳥：4/10 17:30 (駅前店離れ)</p>
+                    <p>🥢 華味鳥：4/10 17:30 (駅前店離れ) - 味 Course</p>
                     <p>🥩 燒肉肉いち 博多店：4/10 22:30</p>
                     <p>🍲 前田屋：4/11 20:30 (今泉店)</p>
                 </div>
@@ -179,14 +195,19 @@
         const container = document.getElementById('app-content');
         container.innerHTML = `
             <div class="bg-white p-6 rounded-3xl card-shadow pb-10">
-                <h2 class="text-xl font-bold text-slate-800 mb-6">出發前 Checklist</h2>
-                <div class="space-y-4">
-                    <div class="flex items-start gap-3 text-xs"><span>⬜</span> <div><strong>護照正本 + 日文譯本</strong> (自駕必備)</div></div>
-                    <div class="flex items-start gap-3 text-xs"><span>⬜</span> <div><strong>VJW QR Code</strong> (入境+海關截圖)</div></div>
-                    <div class="flex items-start gap-3 text-xs"><span>⬜</span> <div><strong>日圓現鈔</strong> (划船/屋台/神社僅收現金)</div></div>
-                    <div class="flex items-start gap-3 text-xs"><span>⬜</span> <div><strong>Uber App</strong> (博多市區短程備用)</div></div>
-                    <div class="flex items-start gap-3 text-xs"><span>⬜</span> <div><strong>10000mAh 行動電源</strong> (全天導航極耗電)</div></div>
-                </div>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">出發前準備清單</h2>
+                <div class="check-cat"><i class="fa-solid fa-id-card text-blue-500"></i> 證件與法規</div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>護照正本 + 日文譯本</strong> (自駕必備)</div></div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>VJW QR Code</strong> (入境+海關截圖)</div></div>
+                <div class="check-cat"><i class="fa-solid fa-yen-sign text-green-500"></i> 財務準備</div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>日圓現鈔</strong> (划船/屋台/神社僅收現金)</div></div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>國泰/玉山/台新信用卡</strong> (機場免稅優惠)</div></div>
+                <div class="check-cat"><i class="fa-solid fa-mobile-screen text-indigo-500"></i> 軟體工具</div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>Uber App</strong> (博多短程利器)</div></div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>一蘭 LINE 排隊進度</strong> (Day 5 太宰府用)</div></div>
+                <div class="check-cat"><i class="fa-solid fa-triangle-exclamation text-red-500"></i> 行程關鍵</div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>還車加油收據</strong> (Day 4 還車前準備)</div></div>
+                <div class="check-item"><span>⬜</span> <div class="text-xs"><strong>行李配重</strong> (Day 6 退房前秤重)</div></div>
             </div>`;
     }
 
@@ -195,31 +216,11 @@
         container.innerHTML = `
             <div class="pb-10">
                 <h2 class="text-xl font-bold text-slate-800 mb-6 border-l-4 border-slate-800 pl-3">專業旅人叮嚀</h2>
-                
-                <div class="tip-box">
-                    <div class="tip-title"><i class="fa-solid fa-car text-blue-500"></i> 自駕與山路風險</div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed"><strong>Serena 車身寬：</strong>高千穗與由布院部分路段窄，大車迴轉半徑大，進入停車場需小心。若遇濃霧，山路車程可能大幅超過 2 小時。</p>
-                </div>
-
-                <div class="tip-box">
-                    <div class="tip-title"><i class="fa-solid fa-clock text-red-500"></i> 划船 30 分鐘死線</div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed"><strong>09:00 前需報到：</strong>划船預約為 09:30，官方規定需提前 30 分鐘報到。遲到名額會被釋放。建議 Day 3 於 06:50 前離開熊本飯店。</p>
-                </div>
-
-                <div class="tip-box">
-                    <div class="tip-title"><i class="fa-solid fa-utensils text-orange-500"></i> 雙晚餐戰力分配</div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed"><strong>戰術保留：</strong>17:30 華味鳥與 22:30 肉いち博多店中間僅 3 小時。華味鳥最後的雞湯粥建議淺嚐，保留胃納量給深夜和牛。</p>
-                </div>
-
-                <div class="tip-box">
-                    <div class="tip-title"><i class="fa-solid fa-gas-pump text-green-600"></i> 還車加油站定位</div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed"><strong>最後加油收據：</strong>07:45 還車前，務必先去 Eneos 熊本駅前店(24h)加滿。還車點在熊本站西口，確保導航正確。</p>
-                </div>
-
-                <div class="tip-box">
-                    <div class="tip-title"><i class="fa-solid fa-suitcase text-indigo-500"></i> 櫻花季機場壓力</div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed"><strong>提早秤重：</strong>4/12 櫻花季機場安檢排隊可能超過 1 小時。建議在大倉飯店先秤重行李配重。19:20 起飛，務必 17:00 抵達機場。</p>
-                </div>
+                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-car text-blue-500"></i> 自駕與山路風險</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>Serena 車身寬：</strong>高千穗與由布院部分路段窄，大車迴轉半徑大，進入停車場需小心。若遇濃霧，山路車程可能大幅超過 2 小時。</p></div>
+                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-clock text-red-500"></i> 划船 30 分鐘死線</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>09:00 前需報到：</strong>划船預約為 09:30，官方規定需提前 30 分鐘報到。遲到名額會被釋放。建議 Day 3 於 06:50 前離開熊本飯店。</p></div>
+                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-utensils text-orange-500"></i> 雙晚餐戰力分配</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>戰術保留：</strong>17:30 華味鳥與 22:30 肉いち博多店中間僅 3 小時。華味鳥最後的雞湯粥建議淺嚐，保留胃納量給深夜和牛。</p></div>
+                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-gas-pump text-green-600"></i> 還車加油站定位</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>最後加油收據：</strong>07:45 還車前，務必先去 Eneos 熊本駅前店(24h)加滿。還車點在熊本站西口，確保導航正確。</p></div>
+                <div class="tip-box"><div class="tip-title"><i class="fa-solid fa-suitcase text-indigo-500"></i> 櫻花季機場壓力</div><p class="text-[11px] text-slate-600 leading-relaxed"><strong>提早秤重：</strong>4/12 櫻花季機場安檢排隊可能超過 1 小時。建議在大倉飯店先秤重行李配重。19:20 起飛，務必 17:00 抵達機場。</p></div>
             </div>`;
     }
 
@@ -227,13 +228,11 @@
         const btns = document.querySelectorAll('nav button');
         btns.forEach(b => b.classList.replace('text-blue-600', 'text-slate-400'));
         document.getElementById('tab-' + tab).classList.replace('text-slate-400', 'text-blue-600');
-        
         if(tab === 'itinerary') renderItinerary();
         else if(tab === 'booking') renderBooking();
         else if(tab === 'checklist') renderChecklist();
         else renderTips();
     }
-
     renderItinerary();
 </script>
 </body>
