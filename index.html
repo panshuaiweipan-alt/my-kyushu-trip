@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026 九州櫻花之旅</title>
+    <title>2026 九州壯遊 fully loaded</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap'); /* 機票字體 */
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #F8F9FA; color: #333; padding-bottom: 80px; }
         .highlight-food { color: #D62828; font-weight: 700; background: #FFEDED; padding: 1px 4px; border-radius: 4px; }
         .highlight-buy { color: #003049; font-weight: 700; background: #E9F5FF; padding: 1px 4px; border-radius: 4px; }
@@ -15,9 +16,25 @@
         .type-transport { border-left: 6px solid #457B9D; }
         .type-attraction { border-left: 6px solid #2A9D8F; }
         .type-restaurant { border-left: 6px solid #E76F51; }
+        .type-hotel { border-left: 6px solid #4F46E5; }
         .day-header { position: sticky; top: 60px; z-index: 40; background: #F8F9FA; border-radius: 8px; margin-top: 1.5rem; }
         .external-link { color: #2563EB; text-decoration: underline; word-break: break-all; font-weight: 500; }
         .card-shadow { box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        /* 機票樣式 */
+        .ticket-card { border-radius: 12px; border: 2px solid #ddd; background: #fff; overflow: hidden; position: relative; margin-bottom: 1rem; }
+        .ticket-header { color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .jx-header { background-color: #004d4f; } /* 星宇 tealt */
+        .br-header { background-color: #00813f; } /* 長榮 Green */
+        .ticket-airline { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 1px; }
+        .ticket-body { padding: 15px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; text-align: center; }
+        .airport-code { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; font-weight: bold; color: #333; line-height: 1; }
+        .airport-name { font-size: 0.75rem; color: #666; font-weight: 500; }
+        .airplane-icon { color: #aaa; font-size: 1.4rem; margin: 0 10px; }
+        .ticket-details { grid-column: span 3; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; margin-top: 10px; text-align: left; font-size: 0.8rem;}
+        .ticket-label { color: #888; font-weight: 500; }
+        .ticket-value { color: #333; font-weight: 700; }
+        .ticket-footer { background: #f9f9f9; padding: 10px 15px; border-top: 1px dashed #ccc; font-size: 0.8rem; display: flex; justify-content: space-between; }
+        .booking-ref { background: #e0f2f1; color: #00796b; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -25,8 +42,8 @@
     <header class="bg-white shadow-md sticky top-0 z-50 px-5 py-4">
         <h1 class="text-xl font-bold tracking-tighter text-center text-slate-800">2026 KYUSHU GRAND TOUR</h1>
         <div class="flex justify-between items-center mt-2 text-[10px] text-slate-500 font-medium">
-            <span><i class="fa-solid fa-plane-arrival mr-1 text-blue-500"></i> 4/07 10:45</span>
-            <span><i class="fa-solid fa-plane-departure mr-1 text-red-500"></i> 4/12 19:20</span>
+            <span><i class="fa-solid fa-plane-arrival mr-1 text-blue-500"></i> 4/07 JX820 09:30抵達</span>
+            <span><i class="fa-solid fa-plane-departure mr-1 text-red-500"></i> 4/12 BR105 12:20起飛</span>
         </div>
     </header>
 
@@ -39,8 +56,8 @@
             <span class="text-[10px] font-bold">全行程</span>
         </button>
         <button onclick="switchTab('tools')" class="nav-btn flex flex-col items-center text-slate-400 transition-colors">
-            <i class="fa-solid fa-suitcase-rolling text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">重要資訊</span>
+            <i class="fa-solid fa-ticket-alt text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">機票飯店</span>
         </button>
         <button onclick="switchTab('checklist')" class="nav-btn flex flex-col items-center text-slate-400 transition-colors">
             <i class="fa-solid fa-circle-check text-xl mb-1"></i>
@@ -64,25 +81,23 @@
             day: "Day 1：4/07 (二) 熊本城・AMU美食攻堅",
             weather: "熊本: 18°C 晴時多雲",
             items: [
-                { time: "10:45", title: "抵達熊本機場", type: "transport", map: "熊本機場", content: "下機直奔海關，利用 VJW 快速通關。到4號公車站等車。 https://www.vjw.digital.go.jp/" },
-                { time: "12:15", title: "THE BLOSSOM 寄物", type: "attraction", map: "THE BLOSSOM KUMAMOTO", content: "務必: 直奔9樓大廳寄放行李，開啟無行李旅客模式。" },
+                { time: "09:30", title: "抵達熊本機場 (TUK)", type: "transport", map: "熊本機場国際線ターミナル", content: "航班 JX820 準時抵達。下機直奔海關，利用 VJW 快速通關。 https://www.vjw.digital.go.jp/" },
+                { time: "10:15", title: "機場巴士 ➔ 熊本站", type: "transport", map: "熊本車站", content: "前往國際線公車站(預計2-3號月台)，搭乘往熊本車站巴士。" },
+                { time: "12:15", title: "THE BLOSSOM 寄物", type: "hotel", map: "THE BLOSSOM KUMAMOTO", content: "務必: 直奔9樓大廳寄放行李，開啟無行李旅客模式。" },
                 { time: "12:40", title: "午餐：勝烈亭 (AMU 7F)", type: "restaurant", map: "勝烈亭 AMU PLAZA", content: "必吃: 炸豬排名店。為下午攻城儲備體力。" },
-                { time: "14:15", title: "計程車 ➔ 熊本城二之丸", type: "transport", map: "熊本城二之丸入口", content: "4人搭一車直達高點，開啟「全下坡」友善模式。 https://castle.kumamoto-guide.jp/info/" },
+                { time: "14:15", title: "計程車 ➔ 熊本城二之丸入口", type: "transport", map: "熊本城二之丸入口", content: "4人搭一車直達高點，開啟「全下坡」友善模式。 https://castle.kumamoto-guide.jp/info/" },
                 { time: "16:15", title: "櫻之馬場城彩苑", type: "attraction", map: "櫻之馬場城彩苑", content: "必吃: 海膽、馬肉可樂餅、熊本熊人形燒。注意: 營業到18:00。" },
-                { time: "18:15", title: "AMU PLAZA 採購", type: "attraction", map: "AMU PLAZA 熊本", content: "鎖定 1F BEAMS、4F UNIQLO、5F GU。務必: 退稅櫃台在1樓！" },
-                { time: "20:00", title: "AMU 7F 晚餐", type: "restaurant", map: "AMU PLAZA 熊本", content: "候選：廻る寿司 めっけもん、和牛焼肉リーベ。" }
+                { time: "18:15", title: "AMU PLAZA 採購", type: "attraction", map: "AMU PLAZA 熊本", content: "鎖定 1F BEAMS、4F UNIQLO、5F GU。務必: 退稅櫃台在1樓！" }
             ]
         },
         {
             day: "Day 2：4/08 (三) 阿蘇由布大環線",
             weather: "阿蘇/由布院: 15°C 涼爽",
             items: [
-                { time: "08:00", title: "領車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "領取 7 人座 MPV (Serena)。務必: 檢查車況，8:30 準時發車。" },
-                { time: "10:00", title: "阿蘇：草千里/火山口", type: "attraction", map: "草千里之濱", content: "拍照: 二樓看草原吃阿蘇牛。必喝: 草千里珈琲焙煎所。" },
-                { time: "11:00", title: "阿蘇 ➔ 由布院 (山並公路)", type: "transport", map: "大觀峰展望所", content: "必走: 山並公路 (Yamanami) 最爽自駕路段。停留大觀峰。" },
-                { time: "13:00", title: "由布院深度享受", type: "restaurant", map: "由布院 釜飯心", content: "必點: 釜飯心 (特色三吃)。必買: Milch布丁、B-speak、吉吾炸雞。" },
-                { time: "18:45", title: "日田車站 (里維兵長)", type: "attraction", map: "日田站", content: "拍照: 兵長銅像合影。快閃 30 分鐘。" },
-                { time: "21:00", title: "黑亭拉麵 + 唐吉訶德", type: "restaurant", map: "黑亭拉麵 下通店", content: "必吃: 黑亭拉麵。注意: 藥妝零食在熊本買齊，避開福岡排隊。" }
+                { time: "08:00", title: "領車：Budget 租車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "領取 7 人座 MPV Serena。務必: 檢查車況，預計 08:30 發車。" },
+                { time: "10:00", title: "阿蘇：草千里/火山口", type: "attraction", map: "草千里之濱", content: "拍照: 二樓看草原吃阿蘇牛。必喝: 草千里珈琲焙煎所。 https://www.kumamoto-asomount.jp/" },
+                { time: "13:00", title: "由布院深度享受", type: "restaurant", map: "由布院 釜飯心", content: "必點: 釜飯心 (鰻魚/豐後牛特色三吃)。必買: Milch布丁、B-speak蛋糕捲。" },
+                { time: "21:00", title: "黑亭拉麵 + 唐吉訶德", type: "restaurant", map: "黑亭拉麵 下通店", content: "必吃: 熊本拉麵。注意: 藥妝零食在熊本買齊，避開博多排隊。" }
             ]
         },
         {
@@ -91,42 +106,39 @@
             items: [
                 { time: "07:00", title: "熊本飯店出發", type: "transport", map: "THE BLOSSOM KUMAMOTO", content: "務必: 準時出發，預留 2 小時山路車程。" },
                 { time: "09:30", title: "高千穗峽划船 (預約)", type: "attraction", map: "高千穗峽 划船", content: "預約: 09:30 報到。拍照: 真名井瀑布、柱狀節理。" },
-                { time: "11:15", title: "午餐：高千穗牛燒肉 和", type: "restaurant", map: "高千穗牛燒肉 和", content: "首要任務: 11:30 開門前抵達衝第一波。必點: 沙朗牛排。" },
-                { time: "13:00", title: "高千穗神社 / 藥妝店", type: "attraction", map: "高千穗神社", content: "注意: 與伴侶繞夫婦杉 3 圈。必買: 對面 COSMOS 便宜草莓。" },
+                { time: "11:15", title: "午餐：高千穗牛燒肉 和", type: "restaurant", map: "高千穗牛燒肉 和", content: "首要任務: 11:30 開門前抵達衝第一波。必點: 沙朗牛排膳。" },
                 { time: "14:10", title: "天安河原 / 天岩戶神社", type: "attraction", map: "天安河原", content: "拍照: 石堆洞穴能量場。注意: 順手疊石堆許願。" },
-                { time: "17:00", title: "晚餐：高森田樂之里", type: "restaurant", map: "高森田樂之里", content: "必吃: 200 年古民家圍爐慢烤。享受慢活。" }
+                { time: "17:00", title: "晚餐：高森田樂之里", type: "restaurant", map: "高森田樂之里", content: "必吃: 200 年古民家圍爐慢烤。 https://www.dengakunosato.com/" }
             ]
         },
         {
             day: "Day 4：4/10 (五) 移動日・博多雙主餐",
             weather: "博多: 19°C 晴天",
             items: [
-                { time: "07:45", title: "熊本車站還車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "注意: 還車前記得加油！8:00 解除自駕任務。" },
-                { time: "12:17", title: "新幹線 (熊本 ➔ 博多)", type: "transport", map: "熊本車站", content: "Sakura 402 號。車上休息，博多口步行 5 分到飯店。" },
-                { time: "13:30", title: "博多車站大採購", type: "attraction", map: "博多車站", content: "必買: 松翁軒、明太子。必吃: il FORNO del Mignon 小可頌。" },
-                { time: "17:30", title: "晚餐：博多華味鳥", type: "restaurant", map: "博多華味鳥 駅前店", content: "預約: 享用水炊鍋。注意: 雞湯精華必喝。" },
-                { time: "22:30", title: "宵夜：藥院燒肉", type: "restaurant", map: "藥院燒肉博多店", content: "必點: 頂級和牛。慶功高潮，吃到爽。" }
+                { time: "07:45", title: "熊本車站還車", type: "transport", map: "Budget Rent a Car Kumamoto Station", content: "注意: 還車前記得加油(西口Budget旁)！8:00 解除自駕任務。" },
+                { time: "12:17", title: "新幹線 (熊本 ➔ 博多)", type: "transport", map: "熊本車站", content: "新幹線 Sakura 402 號。車上休息，博多口步行 5 分到飯店寄放行李。" },
+                { time: "13:30", title: "博多車站大採購", type: "attraction", map: "博多車站", content: "必買: 松翁軒、鈴懸銅鑼燒、明太子。必吃: il FORNO del Mignon 小可頌。" },
+                { time: "17:30", title: "晚餐：博多華味鳥", type: "restaurant", map: "博多華味鳥 駅前店", content: "預約: 駅前店離れ(本館旁)。享受正宗水炊鍋。" },
+                { time: "22:30", title: "宵夜：藥院燒肉", type: "restaurant", map: "藥院燒肉博多店", content: "必點: 頂級和牛。深夜慶功高潮。" }
             ]
         },
         {
             day: "Day 5：4/11 (六) 太宰府・賞櫻戰略",
-            weather: "福岡: 20°C 櫻吹雪",
+            weather: "福岡: 20°C 晴天",
             items: [
-                { time: "09:00", title: "太宰府天滿宮", type: "attraction", map: "太宰府天滿宮", content: "注意: 先抽一蘭號碼牌。拍照: 摸神牛。必吃: 梅枝餅。" },
-                { time: "15:30", title: "飯店轉場 (大倉)", type: "hotel", map: "Hotel Okura Fukuoka", content: "注意: 正式入房小睡，避開週六午後人潮。" },
-                { time: "16:30", title: "舞鶴公園 ➔ 大濠公園", type: "attraction", map: "舞鶴公園", content: "拍照: 櫻吹雪美景。路線: 赤坂站 2 號出口出站。" },
-                { time: "20:30", title: "晚餐：前田屋牛腸鍋", type: "restaurant", map: "前田屋 今泉店", content: "預約: 20:30。必吃: 黑毛和牛牛腸鍋。最後加點雜炊。" }
+                { time: "09:00", title: "太宰府天滿宮", type: "attraction", map: "太宰府天滿宮", content: "注意: 摸神牛。必吃: 梅枝餅。一蘭號碼牌(如需要)。" },
+                { time: "15:30", title: "飯店轉場 (大倉 Fukuoka)", type: "hotel", map: "Hotel Okura Fukuoka", content: "注意: 正式入住 check-in，小睡或天神地下街補貨。逛Parco/Mina。" },
+                { time: "16:30", title: "舞鶴公園・賞櫻", type: "attraction", map: "舞鶴公園", content: "拍照: 櫻吹雪絕景。路線: 赤坂站出站步行抵達。" },
+                { time: "20:30", title: "晚餐：前田屋牛腸鍋", type: "restaurant", map: "前田屋 今泉店", content: "預約: 今泉店。必吃: 黑毛和牛牛腸鍋。" }
             ]
         },
         {
-            day: "Day 6：4/12 (日) 歸途・終極血拼",
+            day: "Day 6：4/12 (日) 歸途",
             weather: "福岡機場: 21°C 晴天",
             items: [
-                { time: "08:30", title: "大倉早餐", type: "restaurant", map: "Hotel Okura Fukuoka", content: "必吃: 法式吐司。享受舒服的最後一餐。" },
-                { time: "11:30", title: "天神地下街終極血拼", type: "attraction", map: "天神地下街", content: "必買: 橫掃名產。注意: 退房前飯店秤重行李。" },
-                { time: "14:30", title: "警固神社 & 藍瓶咖啡", type: "restaurant", map: "Blue Bottle Coffee Fukuoka", content: "注意: 神社內靜心喝咖啡。最後打卡。" },
-                { time: "17:00", title: "計程車衝機場", type: "transport", map: "福岡機場", content: "務必: 17:20 前抵達櫃檯。預約: 機場福砂屋 CUBE 卡兌換。" },
-                { time: "19:20", title: "起飛回台", type: "transport", content: "九州壯遊圓滿收官。" }
+                { time: "08:30", title: "大倉早餐 (Famous French Toast)", type: "restaurant", map: "Hotel Okura Fukuoka", content: "必吃: 享受舒服的最後一餐。11:00 前辦理退房。" },
+                { time: "10:00", title: "計程車衝機場國際線", type: "transport", map: "福岡機場国際線ターミナル", content: "務必: 10:20 前抵達機場櫃檯(提早2小時)。 注意: 班機時間提早至 12:20。" },
+                { time: "12:20", title: "起飛回台 (BR105)", type: "transport", content: "準備回台灣。預約: 機場免稅店福砂屋 CUBE 卡兌換。" }
             ]
         }
     ];
@@ -143,7 +155,7 @@
                 </div>`;
             day.items.forEach(item => {
                 const card = document.createElement('div');
-                card.className = `bg-white p-4 rounded-2xl card-shadow mb-4 ${item.type === 'transport' ? 'type-transport' : item.type === 'attraction' ? 'type-attraction' : item.type === 'restaurant' ? 'type-restaurant' : 'border-l-6 border-indigo-400'}`;
+                card.className = `bg-white p-4 rounded-2xl card-shadow mb-4 ${item.type === 'transport' ? 'type-transport' : item.type === 'attraction' ? 'type-attraction' : item.type === 'restaurant' ? 'type-restaurant' : item.type === 'hotel' ? 'type-hotel' : ''}`;
                 const navUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
@@ -163,27 +175,105 @@
         const container = document.getElementById('app-content');
         container.innerHTML = `
             <div class="space-y-4">
-                <div class="bg-white p-6 rounded-3xl card-shadow border-t-8 border-blue-500">
-                    <h3 class="font-bold text-base mb-4"><i class="fa-solid fa-hotel mr-2 text-blue-500"></i> 住宿清單</h3>
-                    <div class="text-xs space-y-4 text-slate-600">
-                        <div class="flex justify-between items-start">
-                            <span><strong>熊本 (4/7-4/9)</strong><br>THE BLOSSOM KUMAMOTO</span>
-                            <a href="https://www.jrk-hotels.co.jp/tw/Kumamoto/" target="_blank" class="text-blue-500 font-bold">官網 🔗</a>
+                <h2 class="text-xl font-bold text-slate-800 border-l-4 border-slate-800 pl-3">去程與回程機票</h2>
+                
+                <div class="ticket-card">
+                    <div class="ticket-header jx-header">
+                        <span class="ticket-airline">STARLUX AIRLINES</span>
+                        <i class="fa-solid fa-plane"></i>
+                    </div>
+                    <div class="ticket-body">
+                        <div>
+                            <div class="airport-code">TPE</div>
+                            <div class="airport-name">Taipei (TPE)</div>
                         </div>
-                        <div class="flex justify-between items-start">
-                            <span><strong>博多 (4/10)</strong><br>ANA Crowne Plaza</span>
-                            <a href="https://www.ihg.com/crowneplaza/hotels/tw/zh/fukuoka/hakja/hoteldetail" target="_blank" class="text-blue-500 font-bold">官網 🔗</a>
+                        <i class="fa-solid fa-plane airplane-icon"></i>
+                        <div>
+                            <div class="airport-code">FUK</div>
+                            <div class="airport-name">Fukuoka (FUK)</div>
                         </div>
-                        <div class="flex justify-between items-start">
-                            <span><strong>天神 (4/11)</strong><br>Hotel Okura Fukuoka</span>
-                            <a href="https://www.fukuhoku.hotelokura.co.jp/zh-tw/" target="_blank" class="text-blue-500 font-bold">官網 🔗</a>
+                        <div class="ticket-details">
+                            <div><span class="ticket-label">Date:</span> <span class="ticket-value">APR 07 (TUE)</span></div>
+                            <div><span class="ticket-label">Flight:</span> <span class="ticket-value">JX 820</span></div>
+                            <div><span class="ticket-label">Dep Time:</span> <span class="ticket-value">06:10</span></div>
+                            <div><span class="ticket-label">Arr Time:</span> <span class="ticket-value">09:30</span></div>
                         </div>
                     </div>
+                    <div class="ticket-footer">
+                        <span>Passenger: <span class="ticket-value">CHEN/WEN HAO 等</span></span>
+                        <span>Booking Ref: <span class="booking-ref">N8P3V8</span></span>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-3xl card-shadow border-t-8 border-red-500">
-                    <h3 class="font-bold text-base mb-2"><i class="fa-solid fa-plane-up mr-2 text-red-500"></i> 回程航班</h3>
-                    <p class="text-xs text-slate-600 font-bold">4/12 (日) 19:20 福岡機場 (FUK) 起飛</p>
+
+                <div class="ticket-card">
+                    <div class="ticket-header br-header">
+                        <span class="ticket-airline">EVA AIR</span>
+                        <i class="fa-solid fa-plane"></i>
+                    </div>
+                    <div class="ticket-body">
+                        <div>
+                            <div class="airport-code">FUK</div>
+                            <div class="airport-name">Fukuoka (FUK)</div>
+                        </div>
+                        <i class="fa-solid fa-plane airplane-icon"></i>
+                        <div>
+                            <div class="airport-code">TPE</div>
+                            <div class="airport-name">Taipei (TPE)</div>
+                        </div>
+                        <div class="ticket-details">
+                            <div><span class="ticket-label">Date:</span> <span class="ticket-value">APR 12 (SUN)</span></div>
+                            <div><span class="ticket-label">Flight:</span> <span class="ticket-value">BR 105</span></div>
+                            <div><span class="ticket-label">Dep Time:</span> <span class="ticket-value">12:20</span></div>
+                            <div><span class="ticket-label">Arr Time:</span> <span class="ticket-value">13:45</span></div>
+                        </div>
+                    </div>
+                    <div class="ticket-footer">
+                        <span>Passenger: <span class="ticket-value">TSENG/WAN TING 等</span></span>
+                        <span>Booking Ref: <span class="booking-ref">3WCP5K</span></span>
+                    </div>
                 </div>
+
+                <h2 class="text-xl font-bold text-slate-800 border-l-4 border-slate-800 pl-3 mt-6">飯店入住詳情</h2>
+                
+                <div class="bg-white p-6 rounded-3xl card-shadow border-l-8 border-indigo-400">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-base">THE BLOSSOM KUMAMOTO</h3>
+                        <a href="https://www.jrk-hotels.co.jp/tw/Kumamoto/" target="_blank" class="text-blue-500 font-bold text-xs">官網 🔗</a>
+                    </div>
+                    <div class="text-[11px] space-y-2.5 text-slate-600 font-medium">
+                        <p><strong><i class="fa-solid fa-calendar-check mr-1.5 text-indigo-400"></i> Check-in：</strong> 2026/04/07 (TUE) 15:00</p>
+                        <p><strong><i class="fa-solid fa-calendar-xmark mr-1.5 text-indigo-400"></i> Check-out：</strong> 2026/04/10 (FRI) 11:00 (3 Nights)</p>
+                        <p><strong><i class="fa-solid fa-location-dot mr-1.5 text-indigo-400"></i> 地址：</strong> 熊本県熊本市西区春日3丁目15番26號</p>
+                        <p><strong><i class="fa-solid fa-id-card mr-1.5 text-indigo-400"></i> 確認代號：</strong> 26110821639704 (CHEN WEN HAO)</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl card-shadow border-l-8 border-indigo-400">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-base">ANA Crowne Plaza Fukuoka</h3>
+                        <a href="https://www.ihg.com/crowneplaza/hotels/tw/zh/fukuoka/hakja/hoteldetail" target="_blank" class="text-blue-500 font-bold text-xs">官網 🔗</a>
+                    </div>
+                    <div class="text-[11px] space-y-2.5 text-slate-600 font-medium">
+                        <p><strong><i class="fa-solid fa-calendar-check mr-1.5 text-indigo-400"></i> Check-in：</strong> 2026/04/10 (FRI) 15:00</p>
+                        <p><strong><i class="fa-solid fa-calendar-xmark mr-1.5 text-indigo-400"></i> Check-out：</strong> 2026/04/11 (SAT) 11:00 (1 Night)</p>
+                        <p><strong><i class="fa-solid fa-location-dot mr-1.5 text-indigo-400"></i> 地址：</strong> 福岡県福岡市博多区博多駅前3-3-3</p>
+                        <p><strong><i class="fa-solid fa-id-card mr-1.5 text-indigo-400"></i> 確認代號：</strong> 64731304 (PAN SHUAI WEI)</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl card-shadow border-l-8 border-indigo-400">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-base">Hotel Okura Fukuoka (大倉)</h3>
+                        <a href="https://www.fukuhoku.hotelokura.co.jp/zh-tw/" target="_blank" class="text-blue-500 font-bold text-xs">官網 🔗</a>
+                    </div>
+                    <div class="text-[11px] space-y-2.5 text-slate-600 font-medium">
+                        <p><strong><i class="fa-solid fa-calendar-check mr-1.5 text-indigo-400"></i> Check-in：</strong> 2026/04/11 (SAT) 15:00</p>
+                        <p><strong><i class="fa-solid fa-calendar-xmark mr-1.5 text-indigo-400"></i> Check-out：</strong> 2026/04/12 (SUN) 11:00 (1 Night)</p>
+                        <p><strong><i class="fa-solid fa-location-dot mr-1.5 text-indigo-400"></i> 地址：</strong> 福岡県福岡市博多区下川端町3-2</p>
+                        <p><strong><i class="fa-solid fa-id-card mr-1.5 text-indigo-400"></i> 確認代號：</strong> 20260411832145 (TSENG WAN TING)</p>
+                    </div>
+                </div>
+
             </div>
         `;
     }
@@ -191,13 +281,13 @@
     function renderChecklist() {
         const container = document.getElementById('app-content');
         container.innerHTML = `
-            <div class="bg-white p-6 rounded-3xl card-shadow">
+            <div class="bg-white p-6 rounded-3xl card-shadow border-t-8 border-amber-500">
                 <h3 class="font-bold text-base mb-4 text-slate-800 border-b pb-2">出發前必備 Checklist</h3>
-                <ul class="text-xs space-y-4 text-slate-600">
+                <ul class="text-xs space-y-4 text-slate-600 font-medium">
                     <li class="flex items-start gap-3">✅ <span><strong>VJW 申報</strong>：下機前截圖 QR Code</span></li>
-                    <li class="flex items-start gap-3">✅ <span><strong>信用卡優惠</strong>：玉山/台新/國泰機場免稅券 🔗</span></li>
-                    <li class="flex items-start gap-3">✅ <span><strong>預約代碼</strong>：划船/華味鳥/前田屋 (信箱確認)</span></li>
-                    <li class="flex items-start gap-3">✅ <span><strong>行李配重</strong>：回程天神補貨後務必秤重</span></li>
+                    <li class="flex items-start gap-3">✅ <span><strong>信用卡優惠</strong>：確認玉山/國泰機場免稅券 🔗</span></li>
+                    <li class="flex items-start gap-3">✅ <span><strong>預約確認</strong>：划船/華味鳥/前田屋 (信箱確認序號)</span></li>
+                    <li class="flex items-start gap-3">✅ <span><strong>行李重量</strong>：注意長榮 BR105 12:20 起飛，提早秤重。</span></li>
                 </ul>
             </div>
         `;
