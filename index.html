@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026 九州壯遊</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #FAFAFA; /* 極簡灰白背景 */
+            color: #333333;
+            padding-bottom: 80px; /* 預留底部導航欄空間 */
+        }
+        /* 關鍵字高亮樣式 */
+        .highlight-food { color: #E07A5F; font-weight: 700; background: #FDECE7; padding: 2px 6px; border-radius: 4px; }
+        .highlight-buy { color: #3D405B; font-weight: 700; background: #EAEBFA; padding: 2px 6px; border-radius: 4px; }
+        .highlight-alert { color: #E63946; font-weight: 700; border-bottom: 2px solid #E63946; }
+        
+        /* 卡片類型顏色 */
+        .type-transport { border-left: 4px solid #8ECAE6; }
+        .type-attraction { border-left: 4px solid #8CB369; }
+        .type-restaurant { border-left: 4px solid #F4A261; }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white shadow-sm sticky top-0 z-50 px-5 py-4">
+        <h1 class="text-xl font-bold tracking-wider text-center">九州壯遊 2026</h1>
+        <div class="flex justify-between items-center mt-3 text-sm text-gray-500 bg-gray-50 p-2 rounded-lg">
+            <span><i class="fa-solid fa-location-dot mr-1"></i> 目前位置：博多</span>
+            <span><i class="fa-solid fa-cloud-sun mr-1"></i> 18°C 降雨機率 10%</span>
+        </div>
+    </header>
+
+    <main id="app-content" class="p-4 space-y-6">
+        </main>
+
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-3 pb-safe z-50">
+        <button onclick="switchTab('itinerary')" class="flex flex-col items-center text-gray-800 hover:text-black">
+            <i class="fa-solid fa-map-location-dot text-xl mb-1"></i>
+            <span class="text-xs">行程</span>
+        </button>
+        <button onclick="switchTab('tools')" class="flex flex-col items-center text-gray-400 hover:text-black">
+            <i class="fa-solid fa-toolbox text-xl mb-1"></i>
+            <span class="text-xs">工具箱</span>
+        </button>
+        <button onclick="switchTab('budget')" class="flex flex-col items-center text-gray-400 hover:text-black">
+            <i class="fa-solid fa-yen-sign text-xl mb-1"></i>
+            <span class="text-xs">記帳</span>
+        </button>
+    </nav>
+
+<script>
+    // 導遊職責：自動分析文本並加上高亮標籤
+    function parseHighlights(text) {
+        if(!text) return "";
+        return text
+            .replace(/必吃[:：]?\s*([^，。！、]+)/g, '<span class="highlight-food">必吃: $1</span>')
+            .replace(/必點[:：]?\s*([^，。！、]+)/g, '<span class="highlight-food">必點: $1</span>')
+            .replace(/必買[:：]?\s*([^，。！、]+)/g, '<span class="highlight-buy">必買: $1</span>')
+            .replace(/預約[:：]?\s*([^，。！、]+)/g, '<span class="highlight-alert"><i class="fa-solid fa-bell"></i> 預約: $1</span>');
+    }
+
+    // 行程資料庫 (擷取自您提供的 PDF)
+    const itineraryData = [
+        {
+            day: "Day 4：4/10 (五) 熊本 ➔ 博多 [cite: 23]",
+            items: [
+                { time: "07:45", title: "熊本車站還車", type: "transport", map: "熊本車站", content: "8:00還完車任務解除。如果前一晚沒加油要更早起來加油。[cite: 23]" },
+                { time: "10:00", title: "AMU 熊本最後補貨", type: "attraction", map: "AMU PLAZA 熊本", content: "必買: 熊本赤牛洋芋片、古今堂濃厚生起司蛋糕1592。[cite: 23] 導遊筆記：退稅請抓緊時間。" },
+                { time: "12:17", title: "新幹線 (熊本 ➔ 博多)", type: "transport", map: "熊本車站", content: "Sakura 548 號，車上休息片刻。[cite: 23]" },
+                { time: "13:30", title: "博多車站大採購", type: "attraction", map: "博多車站", content: "必買: 福屋明太子、鈴懸銅鑼燒。 必吃: 努努雞、il FORNO del Mignon小可頌。[cite: 25]" },
+                { time: "17:30", title: "晚餐：博多華味鳥", type: "restaurant", map: "博多華味鳥 駅前店", content: "預約「駅前店離れ」，享用正宗水炊鍋。[cite: 27] 導遊筆記：九州代表性鍋物，雞湯精華不容錯過。" },
+                { time: "22:30", title: "宵夜：藥院燒肉", type: "restaurant", map: "藥院燒肉博多店", content: "深夜頂級和牛，吃到高潮。[cite: 27]" }
+            ]
+        },
+        {
+            day: "Day 6：4/11 (六) 福岡櫻花 [cite: 31]",
+            items: [
+                { time: "09:00", title: "太宰府天滿宮", type: "attraction", map: "太宰府天滿宮", content: "搭JR至二日市站轉計程車。參拜摸神牛、抽一蘭號碼牌、必吃梅枝餅。[cite: 30]" },
+                { time: "16:30", title: "舞鶴公園 ➔ 大濠公園", type: "attraction", map: "舞鶴公園", content: "賞櫻:舞鶴公園櫻吹雪。[cite: 32] 導遊筆記：福岡城跡旁的櫻花是絕景。" },
+                { time: "20:30", title: "前田屋牛腸鍋今泉店", type: "restaurant", map: "前田屋 今泉店", content: "預約準時報到。必點: 黑毛和牛牛腸鍋、明太子。[cite: 34]" }
+            ]
+        }
+    ];
+
+    // 渲染行程卡片
+    function renderItinerary() {
+        const container = document.getElementById('app-content');
+        container.innerHTML = '';
+
+        itineraryData.forEach(dayInfo => {
+            const dayTitle = document.createElement('h2');
+            dayTitle.className = "text-lg font-bold text-gray-800 border-b pb-2 mb-4 mt-6";
+            dayTitle.innerText = dayInfo.day;
+            container.appendChild(dayTitle);
+
+            dayInfo.items.forEach(item => {
+                let icon = item.type === 'transport' ? 'fa-train' : item.type === 'attraction' ? 'fa-camera' : 'fa-utensils';
+                let typeClass = item.type === 'transport' ? 'type-transport' : item.type === 'attraction' ? 'type-attraction' : 'type-restaurant';
+                
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-xl shadow-sm p-4 mb-4 ${typeClass} relative`;
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold text-gray-500 w-12">${item.time}</span>
+                            <h3 class="font-bold text-base"><i class="fa-solid ${icon} text-gray-400 mr-1 text-sm"></i> ${item.title}</h3>
+                        </div>
+                        ${item.map ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm active:bg-blue-100 transition"><i class="fa-solid fa-location-arrow"></i> 導航</a>` : ''}
+                    </div>
+                    <div class="mt-3 text-sm text-gray-600 leading-relaxed pl-[60px]">
+                        ${parseHighlights(item.content)}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        });
+    }
+
+    // 渲染工具箱
+    function renderTools() {
+        const container = document.getElementById('app-content');
+        container.innerHTML = `
+            <h2 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">工具箱</h2>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-indigo-400">
+                    <h3 class="font-bold mb-2"><i class="fa-solid fa-plane-departure"></i> 航班資訊</h3>
+                    <p class="text-sm text-gray-600">去程：尚未輸入<br>回程：4/12 19:20 起飛回台 [cite: 42]</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-teal-400">
+                    <h3 class="font-bold mb-2"><i class="fa-solid fa-hotel"></i> 住宿資訊</h3>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>熊本: THE BLOSSOM [cite: 1]</li>
+                        <li>博多: ANA Crowne Plaza [cite: 25]</li>
+                        <li>天神: 大倉飯店 [cite: 31]</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-400">
+                    <h3 class="font-bold mb-2"><i class="fa-solid fa-phone-volume"></i> 緊急聯絡</h3>
+                    <p class="text-sm text-gray-600">駐福岡辦事處：+81-92-734-2810<br>緊急急救/報警：119 / 110</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // 切換 Tab
+    function switchTab(tab) {
+        if(tab === 'itinerary') renderItinerary();
+        else if(tab === 'tools') renderTools();
+        else {
+            document.getElementById('app-content').innerHTML = `
+                <div class="text-center py-20">
+                    <i class="fa-solid fa-wallet text-5xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500 font-bold">記帳本模組</p>
+                    <p class="text-sm text-gray-400 mt-2">（此處請參照下方教學串接 Firebase）</p>
+                </div>
+            `;
+        }
+    }
+
+    // 初始化
+    renderItinerary();
+</script>
+</body>
+</html>
